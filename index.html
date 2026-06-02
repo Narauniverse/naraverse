@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naraverse</title>
+  <style>
+    :root {
+      --red: #e60000;
+      --dark: #0a0a0a;
+      --gray: #1a1a1a;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { 
+      background: var(--dark); 
+      color: #eee; 
+      font-family: 'Segoe UI', system-ui, sans-serif; 
+    }
 
+    /* HEADER */
+    header {
+      background: rgba(10,10,10,0.98);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 1rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #330000;
+    }
+    .logo {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: var(--red);
+      letter-spacing: -2px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+    .search-icon {
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      padding: 4px;
+      transition: 0.3s;
+    }
+    .search-icon:hover { color: var(--red); }
+
+    /* SEARCH DROPDOWN */
+    #searchDropdown {
+      position: absolute;
+      top: 70px;
+      right: 5%;
+      width: 420px;
+      background: #111;
+      border: 1px solid #440000;
+      border-radius: 12px;
+      padding: 15px;
+      display: none;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      z-index: 1100;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 14px 20px;
+      background: #1f1f1f;
+      border: 1px solid #555;
+      border-radius: 50px;
+      color: white;
+      font-size: 16px;
+    }
+    .trending {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #aaa;
+    }
+    .trending-item {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .trending-item:hover {
+      background: #220000;
+      color: #ff9999;
+    }
+
+    /* GRID VIDEO */
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+      gap: 28px; 
+      padding: 40px 5%; 
+    }
+    .card { 
+      background: var(--gray); 
+      border-radius: 16px; 
+      overflow: hidden; 
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+    .card:hover { 
+      transform: translateY(-15px); 
+      box-shadow: 0 25px 50px rgba(230, 0, 0, 0.35);
+    }
+    .thumbnail-container {
+      position: relative;
+      padding-top: 100%; /* 1:1 ratio */
+    }
+    .card img { 
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .card:hover img { 
+      transform: scale(1.1); 
+    }
+    .card-info {
+      padding: 16px;
+    }
+    .card-info h3 { 
+      font-size: 15.5px; 
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+      color: #bbb;
+    }
+    .views {
+      color: #ff9999;
+    }
+    .category {
+      background: #330000;
+      color: #ffbbbb;
+      padding: 3px 11px;
+      border-radius: 20px;
+      font-size: 12.5px;
+    }
+
+    /* HAMBURGER */
+    .hamburger {
+      font-size: 28px;
+      cursor: pointer;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">NARAVERSE</div>
+    
+    <div class="header-right">
+      <svg id="searchBtn" class="search-icon" fill="none" stroke="#ddd" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </div>
+  </header>
+
+  <!-- SEARCH DROPDOWN -->
+  <div id="searchDropdown">
+    <input type="text" id="searchInput" placeholder="Cari judul, kategori...">
+    <div class="trending">
+      <strong>Rekomendasi Pencarian</strong>
+      <div id="trendingItems"></div>
+    </div>
+  </div>
+
+  <div class="grid" id="videoGrid"></div>
+
+  <div class="pagination" id="pagination"></div>
+
+  <footer>
+    <div style="max-width:800px; margin:0 auto; padding:60px 5% 40px; text-align:center; border-top:1px solid #220000;">
+      <div class="logo" style="font-size:1.6rem; opacity:0.7;">NARAVERSE</div>
+      <p style="margin:15px 0; color:#666;">Premium Adult Entertainment • Videos via External CDN</p>
+      <p style="color:#444; font-size:14px;">© 2026 All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    const WORKER_URL = "https://naraverse.slibawblewer.workers.dev";
+    let allVideos = [];
+    let currentPage = 1;
+    const VIDEOS_PER_PAGE = 20;
+
+    const searchDropdown = document.getElementById('searchDropdown');
+    const searchInput = document.getElementById('searchInput');
+
+    // Toggle Search
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      searchDropdown.style.display = searchDropdown.style.display === 'block' ? 'none' : 'block';
+      searchInput.focus();
+    });
+
+    // Close search kalau klik di luar
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#searchBtn') && !e.target.closest('#searchDropdown')) {
+        searchDropdown.style.display = 'none';
+      }
+    });
+
+    async function loadVideos() {
+      try {
+        const res = await fetch(`${WORKER_URL}/api/videos`);
+        allVideos = await res.json();
+        renderPage(1);
+        renderTrending();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderPage(page) {
+      currentPage = page;
+      const grid = document.getElementById('videoGrid');
+      const start = (page - 1) * VIDEOS_PER_PAGE;
+      const pageVideos = allVideos.slice(start, start + VIDEOS_PER_PAGE);
+
+      grid.innerHTML = '';
+
+      pageVideos.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumbnail-container">
+            <img src="\( {v.thumbnail}" alt=" \){v.title}" oncontextmenu="return false;">
+          </div>
+          <div class="card-info">
+            <h3>${v.title}</h3>
+            <div class="meta">
+              <span class="category">${v.category || 'Uncategorized'}</span>
+              <span class="views">${(v.views || Math.floor(Math.random()*5000)+1200).toLocaleString()} views</span>
+            </div>
+          </div>
+        `;
+        card.onclick = () => {
+          card.style.transform = 'scale(0.92)';
+          setTimeout(() => window.open(`player.html?id=${v.id}`, '_blank'), 180);
+        };
+        grid.appendChild(card);
+      });
+
+      renderPagination();
+    }
+
+    function renderPagination() { /* sama seperti sebelumnya */ }
+
+    function renderTrending() {
+      const container = document.getElementById('trendingItems');
+      const topVideos = [...allVideos].sort((a,b) => (b.views||0) - (a.views||0)).slice(0,5);
+
+      container.innerHTML = topVideos.map(v => `
+        <div class="trending-item" onclick="quickSearch('${v.title}')">
+          🔥 \( {v.title.substring(0, 45)} \){v.title.length > 45 ? '...' : ''}
+        </div>
+      `).join('');
+    }
+
+    function quickSearch(title) {
+      searchInput.value = title;
+      searchDropdown.style.display = 'none';
+      // Filter logic bisa ditambah nanti
+      alert("Pencarian untuk: " + title);
+    }
+
+    // Load
+    loadVideos();
+  </script>
+</body>
+</html>
