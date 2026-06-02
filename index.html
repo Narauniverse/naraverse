@@ -3,278 +3,1157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Naraverse</title>
+  <title>Naraverse — Premium Entertainment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --red: #e60000;
-      --dark: #0a0a0a;
-      --gray: #1a1a1a;
+      --red-dim: #991100;
+      --red-glow: rgba(230,0,0,0.18);
+      --dark: #080808;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: rgba(255,255,255,0.06);
+      --border-red: rgba(230,0,0,0.22);
+      --text: #e8e8e8;
+      --muted: #666;
+      --accent: #ff3333;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { 
-      background: var(--dark); 
-      color: #eee; 
-      font-family: 'Segoe UI', system-ui, sans-serif; 
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* HEADER */
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── HEADER ─── */
     header {
-      background: rgba(10,10,10,0.98);
-      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
-      z-index: 1000;
-      padding: 1rem 5%;
+      z-index: 500;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-red);
+    }
+
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 4%;
+      height: 66px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #330000;
+      gap: 24px;
     }
+
     .logo {
-      font-size: 1.85rem;
-      font-weight: 900;
-      color: var(--red);
-      letter-spacing: -2px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 3px;
+      color: #fff;
+      text-decoration: none;
+      flex-shrink: 0;
+      position: relative;
     }
-    .header-right {
+    .logo span { color: var(--red); }
+    .logo::after {
+      content: '18+';
+      position: absolute;
+      top: -2px; right: -34px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--red);
+      border: 1px solid var(--red);
+      border-radius: 3px;
+      padding: 1px 4px;
+      line-height: 1.4;
+    }
+
+    /* SEARCH BAR inline */
+    .search-bar {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      height: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 0 40px 0 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+    .search-bar input:focus {
+      border-color: var(--red-dim);
+      box-shadow: 0 0 0 3px var(--red-glow);
+    }
+    .search-bar svg {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 18px;
+      stroke: var(--muted);
+      pointer-events: none;
+    }
+
+    /* SEARCH RESULTS DROPDOWN */
+    #searchResults {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-red);
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      z-index: 600;
+    }
+    .search-result-item {
       display: flex;
       align-items: center;
-      gap: 25px;
-    }
-    .search-icon {
-      width: 28px;
-      height: 28px;
+      gap: 12px;
+      padding: 10px 14px;
       cursor: pointer;
-      padding: 4px;
-      transition: 0.3s;
+      transition: background 0.15s;
+      border-bottom: 1px solid var(--border);
     }
-    .search-icon:hover { color: var(--red); }
-
-    /* SEARCH DROPDOWN */
-    #searchDropdown {
-      position: absolute;
-      top: 70px;
-      right: 5%;
-      width: 420px;
-      background: #111;
-      border: 1px solid #440000;
-      border-radius: 12px;
-      padding: 15px;
-      display: none;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-      z-index: 1100;
-    }
-    #searchInput {
-      width: 100%;
-      padding: 14px 20px;
-      background: #1f1f1f;
-      border: 1px solid #555;
-      border-radius: 50px;
-      color: white;
-      font-size: 16px;
-    }
-    .trending {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #aaa;
-    }
-    .trending-item {
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-    }
-    .trending-item:hover {
-      background: #220000;
-      color: #ff9999;
-    }
-
-    /* GRID VIDEO */
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-      gap: 28px; 
-      padding: 40px 5%; 
-    }
-    .card { 
-      background: var(--gray); 
-      border-radius: 16px; 
-      overflow: hidden; 
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    }
-    .card:hover { 
-      transform: translateY(-15px); 
-      box-shadow: 0 25px 50px rgba(230, 0, 0, 0.35);
-    }
-    .thumbnail-container {
-      position: relative;
-      padding-top: 100%; /* 1:1 ratio */
-    }
-    .card img { 
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; 
-      height: 100%; 
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover { background: var(--surface2); }
+    .search-result-thumb {
+      width: 52px; height: 38px;
       object-fit: cover;
-      transition: transform 0.5s;
+      border-radius: 5px;
+      flex-shrink: 0;
     }
-    .card:hover img { 
-      transform: scale(1.1); 
+    .search-result-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.3;
     }
-    .card-info {
-      padding: 16px;
+    .search-result-cat {
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 3px;
     }
-    .card-info h3 { 
-      font-size: 15.5px; 
-      line-height: 1.35;
+    .search-no-result {
+      padding: 18px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* NAV RIGHT */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .nav-btn:hover { border-color: var(--red-dim); color: var(--accent); }
+    .nav-btn.primary {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+    .nav-btn.primary:hover { background: #cc0000; }
+    .nav-btn svg { width:16px; height:16px; }
+
+    /* HAMBURGER (mobile) */
+    .hamburger {
+      display: none;
+      width: 38px; height: 38px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      flex-direction: column; gap: 5px;
+    }
+    .hamburger span {
+      width: 18px; height: 1.5px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ─── AD BANNER — BELOW HEADER ─── */
+    .ad-banner-top {
+      width: 100%;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 4%;
+      min-height: 90px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ad-banner-top::before {
+      content: 'ADVERTISEMENT';
+      position: absolute;
+      top: 5px; left: 50%; transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+    /* ============================================================
+       🔴 IKLAN SLOT 1 — BANNER BAWAH HEADER (728x90 / Leaderboard)
+       Ganti konten di dalam .ad-banner-top__slot dengan kode iklan lo
+       ============================================================ */
+    .ad-banner-top__slot {
+      /* Placeholder styling — hapus ini kalau udah ada kode iklan */
+      width: 728px;
+      max-width: 100%;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(230,0,0,0.25);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ─── FILTER / CATEGORY BAR ─── */
+    .filter-bar {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 24px 4% 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-right: 4px;
+    }
+    .filter-chip {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-chip:hover, .filter-chip.active {
+      border-color: var(--red);
+      color: var(--accent);
+      background: rgba(230,0,0,0.07);
+    }
+
+    /* SORT */
+    .sort-select {
+      margin-left: auto;
+      height: 36px;
+      padding: 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 16px 4% 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stats-text {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+    .stats-text span { color: var(--accent); }
+
+    /* ─── VIDEO GRID ─── */
+    .grid {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 20px 4% 40px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 0 1px var(--border-red);
+    }
+
+    .thumb-wrap {
+      position: relative;
+      padding-top: 62%;
+      overflow: hidden;
+      background: #0f0f0f;
+    }
+    .card img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    .card:hover img { transform: scale(1.07); }
+
+    /* DURATION BADGE */
+    .duration {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      background: rgba(0,0,0,0.82);
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* NEW badge */
+    .badge-new {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: var(--red);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* PLAY HOVER OVERLAY */
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .card:hover .play-overlay { background: rgba(0,0,0,0.35); }
+    .play-icon {
+      width: 50px; height: 50px;
+      background: rgba(230,0,0,0.9);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.3s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    .card:hover .play-icon { opacity: 1; transform: scale(1); }
+    .play-icon svg { width:20px; height:20px; fill:#fff; margin-left:3px; }
+
+    /* CARD INFO */
+    .card-info { padding: 14px; }
+    .card-info h3 {
+      font-size: 14.5px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .cat-tag {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(230,0,0,0.1);
+      border: 1px solid rgba(230,0,0,0.2);
+      padding: 3px 9px;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 130px;
+    }
+    .view-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* SKELETON LOADER */
+    .skeleton {
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .skeleton-thumb {
+      width: 100%;
+      padding-top: 62%;
+      background: linear-gradient(90deg, #161616 25%, #1f1f1f 50%, #161616 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    .skeleton-info { padding: 14px; }
+    .skeleton-line {
+      height: 13px; border-radius: 4px;
+      background: linear-gradient(90deg, #161616 25%, #1f1f1f 50%, #161616 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
       margin-bottom: 10px;
     }
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13.5px;
-      color: #bbb;
-    }
-    .views {
-      color: #ff9999;
-    }
-    .category {
-      background: #330000;
-      color: #ffbbbb;
-      padding: 3px 11px;
-      border-radius: 20px;
-      font-size: 12.5px;
+    .skeleton-line.short { width: 60%; }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
-    /* HAMBURGER */
-    .hamburger {
-      font-size: 28px;
+    /* ─── AD BANNER — ABOVE FOOTER ─── */
+    .ad-banner-bottom {
+      width: 100%;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 4%;
+      min-height: 100px;
+      position: relative;
+      margin-top: 20px;
+    }
+    .ad-banner-bottom::before {
+      content: 'ADVERTISEMENT';
+      position: absolute;
+      top: 5px; left: 50%; transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+    /* ============================================================
+       🔴 IKLAN SLOT 2 — BANNER DI ATAS FOOTER (970x90 / Billboard)
+       Ganti konten di dalam .ad-banner-bottom__slot dengan kode iklan lo
+       ============================================================ */
+    .ad-banner-bottom__slot {
+      /* Placeholder styling — hapus ini kalau udah ada kode iklan */
+      width: 970px;
+      max-width: 100%;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(230,0,0,0.25);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ─── PAGINATION ─── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 4% 40px;
+    }
+    .page-btn {
+      width: 38px; height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
       cursor: pointer;
-      padding: 5px;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { border-color: var(--red-dim); color: var(--accent); }
+    .page-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border-red);
+      padding: 48px 4% 36px;
+    }
+    .footer-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .footer-brand .logo {
+      font-size: 1.7rem;
+      display: block;
+      margin-bottom: 14px;
+    }
+    .footer-brand p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+    .footer-col h4 {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      color: #aaa;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      max-width: 1600px;
+      margin: 36px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-bottom p {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .footer-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ─── MOBILE DRAWER ─── */
+    .drawer-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 800;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .drawer-overlay.open { display: block; opacity: 1; }
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: 280px; height: 100%;
+      background: var(--surface);
+      border-left: 1px solid var(--border-red);
+      z-index: 900;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-close {
+      align-self: flex-end;
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .drawer a {
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      transition: color 0.2s;
+    }
+    .drawer a:hover { color: var(--accent); }
+    .drawer a svg { width:16px; height:16px; stroke: currentColor; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+    .empty-state svg { width:60px; height:60px; margin-bottom:20px; opacity:0.3; }
+    .empty-state p { font-size: 16px; }
+
+    /* ─── BACK TO TOP ─── */
+    #backToTop {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 44px; height: 44px;
+      background: var(--red);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 400;
+    }
+    #backToTop.show { opacity: 1; transform: translateY(0); }
+    #backToTop svg { width:20px; height:20px; stroke:#fff; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .nav-right .nav-btn { display: none; }
+      .hamburger { display: flex; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .search-bar { max-width: 100%; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .logo::after { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ═══ HEADER ═══ -->
   <header>
-    <div class="logo">NARAVERSE</div>
-    
-    <div class="header-right">
-      <svg id="searchBtn" class="search-icon" fill="none" stroke="#ddd" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 01-14 0 7 7 0 0114 0z"/>
-      </svg>
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="header-inner">
+      <a href="/" class="logo">NARA<span>VERSE</span></a>
+
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Cari video, kategori..." autocomplete="off">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <div id="searchResults"></div>
+      </div>
+
+      <nav class="nav-right">
+        <button class="nav-btn" onclick="openCategories()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16"/>
+          </svg>
+          Kategori
+        </button>
+        <button class="nav-btn" onclick="openFavorites()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          Favorit
+        </button>
+        <button class="nav-btn primary" onclick="window.open('buat.php','_blank')">
+          + Upload
+        </button>
+      </nav>
+
+      <!-- hamburger -->
+      <div class="hamburger" id="hamburgerBtn" onclick="toggleDrawer(true)">
+        <span></span><span></span><span></span>
+      </div>
     </div>
   </header>
 
-  <!-- SEARCH DROPDOWN -->
-  <div id="searchDropdown">
-    <input type="text" id="searchInput" placeholder="Cari judul, kategori...">
-    <div class="trending">
-      <strong>Rekomendasi Pencarian</strong>
-      <div id="trendingItems"></div>
+  <!-- ═══ AD SLOT 1 — BAWAH HEADER ═══ -->
+  <div class="ad-banner-top">
+    <div class="ad-banner-top__slot">
+      <!-- 🔴 GANTI KONTEN DI SINI DENGAN KODE IKLAN LO (728x90) -->
+      AD SLOT — 728 × 90
     </div>
   </div>
 
+  <!-- ═══ FILTER BAR ═══ -->
+  <div class="filter-bar" id="filterBar">
+    <span class="filter-label">FILTER</span>
+    <button class="filter-chip active" data-cat="all">Semua</button>
+    <!-- chips kategori di-generate JS -->
+  </div>
+
+  <!-- ═══ STATS + SORT ═══ -->
+  <div class="stats-bar">
+    <p class="stats-text">Menampilkan <span id="statsCount">—</span> video</p>
+    <select class="sort-select" id="sortSelect" onchange="applySortFilter()">
+      <option value="newest">Terbaru</option>
+      <option value="popular">Terpopuler</option>
+      <option value="az">A – Z</option>
+    </select>
+  </div>
+
+  <!-- ═══ VIDEO GRID ═══ -->
   <div class="grid" id="videoGrid"></div>
 
+  <!-- ═══ PAGINATION ═══ -->
   <div class="pagination" id="pagination"></div>
 
+  <!-- ═══ AD SLOT 2 — ATAS FOOTER ═══ -->
+  <div class="ad-banner-bottom">
+    <div class="ad-banner-bottom__slot">
+      <!-- 🔴 GANTI KONTEN DI SINI DENGAN KODE IKLAN LO (970x90) -->
+      AD SLOT — 970 × 90
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
   <footer>
-    <div style="max-width:800px; margin:0 auto; padding:60px 5% 40px; text-align:center; border-top:1px solid #220000;">
-      <div class="logo" style="font-size:1.6rem; opacity:0.7;">NARAVERSE</div>
-      <p style="margin:15px 0; color:#666;">Premium Adult Entertainment • Videos via External CDN</p>
-      <p style="color:#444; font-size:14px;">© 2026 All Rights Reserved</p>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo">NARA<span>VERSE</span></span>
+        <p>Platform streaming premium. Konten eksklusif dari berbagai kategori. 18+ only.</p>
+      </div>
+      <div class="footer-col">
+        <h4>NAVIGASI</h4>
+        <a href="/">Beranda</a>
+        <a href="#" onclick="openCategories()">Kategori</a>
+        <a href="#" onclick="openFavorites()">Favorit</a>
+        <a href="buat.php" target="_blank">Upload Video</a>
+      </div>
+      <div class="footer-col">
+        <h4>INFO</h4>
+        <a href="#">Tentang Kami</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+        <a href="#">DMCA</a>
+      </div>
+      <div class="footer-col">
+        <h4>SUPPORT</h4>
+        <a href="#">Hubungi Kami</a>
+        <a href="#">Iklan</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Naraverse. All Rights Reserved.</p>
+      <div class="footer-badges">
+        <span class="badge">18+</span>
+        <span class="badge">RTA</span>
+        <span class="badge">DMCA Protected</span>
+      </div>
     </div>
   </footer>
 
+  <!-- MOBILE DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+  <div class="drawer" id="mobileDrawer">
+    <button class="drawer-close" onclick="toggleDrawer(false)">✕</button>
+    <a href="/">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Beranda
+    </a>
+    <a href="#" onclick="toggleDrawer(false); openCategories()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h8m-8 6h16"/>
+      </svg>
+      Kategori
+    </a>
+    <a href="#" onclick="toggleDrawer(false); openFavorites()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+      </svg>
+      Favorit
+    </a>
+    <a href="buat.php" target="_blank">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      Upload Video
+    </a>
+  </div>
+
+  <!-- BACK TO TOP -->
+  <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to Top">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+    </svg>
+  </button>
+
   <script>
     const WORKER_URL = "https://naraverse.slibawblewer.workers.dev";
-    let allVideos = [];
-    let currentPage = 1;
     const VIDEOS_PER_PAGE = 20;
 
-    const searchDropdown = document.getElementById('searchDropdown');
-    const searchInput = document.getElementById('searchInput');
+    let allVideos = [];
+    let filteredVideos = [];
+    let currentPage = 1;
+    let activeCategory = 'all';
+    let favorites = JSON.parse(localStorage.getItem('nv_favorites') || '[]');
 
-    // Toggle Search
-    document.getElementById('searchBtn').addEventListener('click', () => {
-      searchDropdown.style.display = searchDropdown.style.display === 'block' ? 'none' : 'block';
-      searchInput.focus();
-    });
-
-    // Close search kalau klik di luar
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#searchBtn') && !e.target.closest('#searchDropdown')) {
-        searchDropdown.style.display = 'none';
-      }
-    });
-
+    // ─── LOAD ───
     async function loadVideos() {
+      renderSkeletons();
       try {
         const res = await fetch(`${WORKER_URL}/api/videos`);
         allVideos = await res.json();
-        renderPage(1);
-        renderTrending();
+
+        // Inject random views jika tidak ada
+        allVideos = allVideos.map(v => ({
+          ...v,
+          views: v.views || Math.floor(Math.random() * 48000) + 1200,
+          duration: v.duration || randomDuration(),
+          isNew: v.isNew !== undefined ? v.isNew : Math.random() > 0.75,
+        }));
+
+        buildCategoryChips();
+        applyFilter('all');
       } catch (e) {
         console.error(e);
+        document.getElementById('videoGrid').innerHTML = `
+          <div class="empty-state">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+            </svg>
+            <p>Gagal memuat video. Coba lagi nanti.</p>
+          </div>`;
       }
     }
 
+    function randomDuration() {
+      const m = Math.floor(Math.random() * 45) + 3;
+      const s = Math.floor(Math.random() * 60);
+      return `${m}:${s.toString().padStart(2,'0')}`;
+    }
+
+    // ─── SKELETON ───
+    function renderSkeletons() {
+      const grid = document.getElementById('videoGrid');
+      grid.innerHTML = Array(12).fill(0).map(() => `
+        <div class="skeleton">
+          <div class="skeleton-thumb"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ─── CATEGORY CHIPS ───
+    function buildCategoryChips() {
+      const cats = [...new Set(allVideos.map(v => v.category).filter(Boolean))];
+      const bar = document.getElementById('filterBar');
+      cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-chip';
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        btn.onclick = () => applyFilter(cat);
+        bar.appendChild(btn);
+      });
+    }
+
+    // ─── FILTER + SORT ───
+    function applyFilter(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.cat === cat);
+      });
+      applySortFilter();
+    }
+
+    function applySortFilter() {
+      const sort = document.getElementById('sortSelect').value;
+      let base = activeCategory === 'all'
+        ? [...allVideos]
+        : allVideos.filter(v => v.category === activeCategory);
+
+      if (sort === 'popular') base.sort((a,b) => b.views - a.views);
+      else if (sort === 'az') base.sort((a,b) => (a.title||'').localeCompare(b.title||''));
+      // newest = default order
+
+      filteredVideos = base;
+      document.getElementById('statsCount').textContent = filteredVideos.length.toLocaleString();
+      renderPage(1);
+    }
+
+    // ─── RENDER PAGE ───
     function renderPage(page) {
       currentPage = page;
       const grid = document.getElementById('videoGrid');
       const start = (page - 1) * VIDEOS_PER_PAGE;
-      const pageVideos = allVideos.slice(start, start + VIDEOS_PER_PAGE);
+      const slice = filteredVideos.slice(start, start + VIDEOS_PER_PAGE);
+
+      if (!slice.length) {
+        grid.innerHTML = `<div class="empty-state">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <p>Tidak ada video ditemukan.</p>
+        </div>`;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
 
       grid.innerHTML = '';
-
-      pageVideos.forEach(v => {
+      slice.forEach((v, i) => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.style.animationDelay = `${i * 0.04}s`;
+        const isFav = favorites.includes(String(v.id));
         card.innerHTML = `
-          <div class="thumbnail-container">
-            <img src="\( {v.thumbnail}" alt=" \){v.title}" oncontextmenu="return false;">
+          <div class="thumb-wrap">
+            <img src="${v.thumbnail}" alt="${escHtml(v.title)}" loading="lazy" oncontextmenu="return false;" draggable="false">
+            <div class="play-overlay">
+              <div class="play-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+            ${v.isNew ? '<span class="badge-new">NEW</span>' : ''}
+            <span class="duration">${v.duration || '—'}</span>
           </div>
           <div class="card-info">
-            <h3>${v.title}</h3>
-            <div class="meta">
-              <span class="category">${v.category || 'Uncategorized'}</span>
-              <span class="views">${(v.views || Math.floor(Math.random()*5000)+1200).toLocaleString()} views</span>
+            <h3>${escHtml(v.title)}</h3>
+            <div class="card-meta">
+              <span class="cat-tag">${escHtml(v.category || 'Uncategorized')}</span>
+              <span class="view-count">${Number(v.views).toLocaleString()} views</span>
             </div>
           </div>
         `;
         card.onclick = () => {
-          card.style.transform = 'scale(0.92)';
-          setTimeout(() => window.open(`player.html?id=${v.id}`, '_blank'), 180);
+          card.style.opacity = '0.7';
+          card.style.transform = 'scale(0.96)';
+          setTimeout(() => window.open(`player.html?id=${v.id}`, '_blank'), 160);
         };
         grid.appendChild(card);
       });
 
       renderPagination();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function renderPagination() { /* sama seperti sebelumnya */ }
+    // ─── PAGINATION ───
+    function renderPagination() {
+      const total = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
+      const pg = document.getElementById('pagination');
+      if (total <= 1) { pg.innerHTML = ''; return; }
 
-    function renderTrending() {
-      const container = document.getElementById('trendingItems');
-      const topVideos = [...allVideos].sort((a,b) => (b.views||0) - (a.views||0)).slice(0,5);
+      let html = '';
+      // Prev
+      html += `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="renderPage(${currentPage-1})">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>`;
 
-      container.innerHTML = topVideos.map(v => `
-        <div class="trending-item" onclick="quickSearch('${v.title}')">
-          🔥 \( {v.title.substring(0, 45)} \){v.title.length > 45 ? '...' : ''}
-        </div>
-      `).join('');
+      // Pages
+      const range = pageRange(currentPage, total);
+      range.forEach(p => {
+        if (p === '…') {
+          html += `<button class="page-btn" disabled>…</button>`;
+        } else {
+          html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="renderPage(${p})">${p}</button>`;
+        }
+      });
+
+      // Next
+      html += `<button class="page-btn" ${currentPage===total?'disabled':''} onclick="renderPage(${currentPage+1})">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>`;
+
+      pg.innerHTML = html;
     }
 
-    function quickSearch(title) {
-      searchInput.value = title;
-      searchDropdown.style.display = 'none';
-      // Filter logic bisa ditambah nanti
-      alert("Pencarian untuk: " + title);
+    function pageRange(cur, total) {
+      if (total <= 7) return Array.from({length:total},(_,i)=>i+1);
+      if (cur <= 4) return [1,2,3,4,5,'…',total];
+      if (cur >= total-3) return [1,'…',total-4,total-3,total-2,total-1,total];
+      return [1,'…',cur-1,cur,cur+1,'…',total];
     }
 
-    // Load
+    // ─── SEARCH ───
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimer;
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) { searchResults.style.display = 'none'; return; }
+      searchTimer = setTimeout(() => doSearch(q), 200);
+    });
+
+    function doSearch(q) {
+      const hits = allVideos.filter(v =>
+        (v.title||'').toLowerCase().includes(q) ||
+        (v.category||'').toLowerCase().includes(q)
+      ).slice(0, 6);
+
+      if (!hits.length) {
+        searchResults.innerHTML = `<div class="search-no-result">Tidak ditemukan hasil untuk "<b>${escHtml(q)}</b>"</div>`;
+      } else {
+        searchResults.innerHTML = hits.map(v => `
+          <div class="search-result-item" onclick="window.open('player.html?id=${v.id}','_blank')">
+            <img class="search-result-thumb" src="${v.thumbnail}" alt="">
+            <div>
+              <div class="search-result-title">${escHtml(v.title)}</div>
+              <div class="search-result-cat">${escHtml(v.category||'Uncategorized')}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      searchResults.style.display = 'block';
+    }
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.search-bar')) searchResults.style.display = 'none';
+    });
+
+    // ─── CATEGORIES MODAL (simple) ───
+    function openCategories() {
+      const cats = [...new Set(allVideos.map(v => v.category).filter(Boolean))];
+      const items = cats.map(c => `
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:15px;color:var(--text);"
+             onclick="closeModal();applyFilter('${escHtml(c)}')">
+          ${escHtml(c)}
+        </div>`).join('');
+      showModal('Kategori', items || '<p style="color:var(--muted)">Belum ada kategori.</p>');
+    }
+
+    // ─── FAVORITES ───
+    function openFavorites() {
+      const favVideos = allVideos.filter(v => favorites.includes(String(v.id)));
+      if (!favVideos.length) {
+        showModal('Favorit', '<p style="color:var(--muted);font-size:14px;">Belum ada video favorit. Klik ikon ❤ pada video untuk menyimpan.</p>');
+        return;
+      }
+      const items = favVideos.map(v => `
+        <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;"
+             onclick="window.open('player.html?id=${v.id}','_blank')">
+          <img src="${v.thumbnail}" style="width:72px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;">${escHtml(v.title)}</div>
+            <div style="font-size:12px;color:var(--red);">${escHtml(v.category||'')}</div>
+          </div>
+        </div>`).join('');
+      showModal('Favorit', items);
+    }
+
+    // ─── MODAL HELPER ───
+    function showModal(title, content) {
+      let m = document.getElementById('nvModal');
+      if (!m) {
+        m = document.createElement('div');
+        m.id = 'nvModal';
+        m.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;`;
+        m.onclick = e => { if (e.target===m) closeModal(); };
+        document.body.appendChild(m);
+      }
+      m.innerHTML = `
+        <div style="background:var(--surface);border:1px solid var(--border-red);border-radius:14px;width:100%;max-width:440px;max-height:80vh;overflow-y:auto;padding:28px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;">${title}</h2>
+            <button onclick="closeModal()" style="background:transparent;border:1px solid var(--border);width:34px;height:34px;border-radius:8px;color:var(--text);cursor:pointer;font-size:16px;">✕</button>
+          </div>
+          ${content}
+        </div>`;
+      m.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const m = document.getElementById('nvModal');
+      if (m) m.style.display = 'none';
+    }
+
+    // ─── DRAWER ───
+    function toggleDrawer(open) {
+      document.getElementById('mobileDrawer').classList.toggle('open', open);
+      document.getElementById('drawerOverlay').classList.toggle('open', open);
+    }
+
+    // ─── BACK TO TOP ───
+    window.addEventListener('scroll', () => {
+      document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+    });
+
+    // ─── UTILS ───
+    function escHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ─── INIT ───
     loadVideos();
   </script>
 </body>
