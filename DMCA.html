@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>DMCA — Naraverse</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--red:#e60000;--red-dim:#991100;--red-glow:rgba(230,0,0,0.15);--dark:#080808;--surface:#111;--surface2:#181818;--border:rgba(255,255,255,0.06);--border-red:rgba(230,0,0,0.22);--text:#e8e8e8;--muted:#666;--accent:#ff3333;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+    header{background:rgba(8,8,8,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-red);position:sticky;top:0;z-index:200;}
+    .header-inner{max-width:1000px;margin:0 auto;padding:0 5%;height:60px;display:flex;align-items:center;gap:20px;}
+    .logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:3px;color:#fff;text-decoration:none;}
+    .logo span{color:var(--red);}
+    .back-btn{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13.5px;text-decoration:none;margin-left:auto;transition:.2s;}
+    .back-btn:hover{color:var(--text);}
+    main{max-width:860px;margin:0 auto;padding:60px 5% 80px;}
+    .page-eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:2.5px;color:var(--red);margin-bottom:14px;}
+    h1{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;letter-spacing:2px;line-height:1;margin-bottom:24px;}
+    .divider{height:1px;background:var(--border-red);margin:36px 0;}
+    h2{font-size:17px;font-weight:600;color:var(--text);margin:32px 0 12px;}
+    p{font-size:15px;color:#aaa;line-height:1.8;margin-bottom:16px;}
+    ul,ol{padding-left:20px;color:#aaa;font-size:15px;line-height:1.9;margin-bottom:16px;}
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .highlight-box{background:var(--surface);border:1px solid var(--border-red);border-radius:12px;padding:24px 28px;margin:28px 0;}
+    .highlight-box p{margin:0;color:var(--text);}
+    footer{border-top:1px solid var(--border-red);padding:32px 5%;text-align:center;}
+    footer p{color:var(--muted);font-size:12.5px;margin-top:8px;}
+    /* FAQ accordion */
+    .faq-item{border-bottom:1px solid var(--border);padding:0;}
+    .faq-q{width:100%;text-align:left;background:transparent;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:20px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .faq-q .chevron{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0;}
+    .faq-a{display:none;padding-bottom:20px;color:#aaa;font-size:14.5px;line-height:1.8;}
+    .faq-item.open .faq-a{display:block;}
+    .faq-item.open .chevron{transform:rotate(180deg);}
+    /* Chat */
+    .chat-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:32px;}
+    .chat-messages{padding:24px;display:flex;flex-direction:column;gap:16px;min-height:300px;max-height:460px;overflow-y:auto;}
+    .msg{max-width:72%;display:flex;flex-direction:column;gap:4px;}
+    .msg.user{align-self:flex-end;align-items:flex-end;}
+    .msg-bubble{padding:12px 16px;border-radius:12px;font-size:14px;line-height:1.6;}
+    .msg.bot .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-radius:12px 12px 12px 2px;}
+    .msg.user .msg-bubble{background:var(--red);border-radius:12px 12px 2px 12px;}
+    .msg-time{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);}
+    .chat-input-row{display:flex;gap:10px;padding:16px;border-top:1px solid var(--border);}
+    .chat-input-row input{flex:1;height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:0 16px;outline:none;transition:.2s;}
+    .chat-input-row input:focus{border-color:var(--red-dim);}
+    .chat-send{height:44px;padding:0 20px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:.2s;}
+    .chat-send:hover{background:#cc0000;}
+    /* Iklan page cards */
+    .ad-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:24px 0;}
+    .ad-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;}
+    .ad-card .size{font-family:'DM Mono',monospace;font-size:1.6rem;color:var(--accent);font-weight:700;margin-bottom:6px;}
+    .ad-card .name{font-size:14px;font-weight:600;margin-bottom:6px;}
+    .ad-card .desc{font-size:13px;color:var(--muted);line-height:1.6;}
+    .contact-btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 24px;background:var(--red);border-radius:9px;color:#fff;font-size:14.5px;font-weight:600;text-decoration:none!important;transition:.2s;margin-top:8px;}
+    .contact-btn:hover{background:#cc0000;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">NARA<span>VERSE</span></a>
+    <a href="/" class="back-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Beranda
+    </a>
+  </div>
+</header>
+<main>
+  <div class="page-eyebrow">DMCA POLICY</div>
+  <h1>DMCA & Hak Cipta</h1>
+  <div class="divider"></div>
+  <div class="highlight-box">
+    <p>Naraverse menghormati hak kekayaan intelektual. Kami merespons dengan cepat setiap laporan pelanggaran hak cipta yang valid sesuai Digital Millennium Copyright Act (DMCA).</p>
+  </div>
+  <h2>Proses Pengajuan Takedown</h2>
+  <p>Jika kamu adalah pemilik hak cipta dan percaya bahwa konten di platform kami melanggar hak kamu, kirimkan laporan melalui <a href="chat.html">Chat Support</a> dengan informasi berikut:</p>
+  <ol>
+    <li>Identifikasi karya yang dilanggar (judul, URL asli)</li>
+    <li>URL spesifik konten yang melanggar di Naraverse</li>
+    <li>Informasi kontak kamu (nama, email)</li>
+    <li>Pernyataan bahwa kamu adalah pemilik hak atau bertindak atas nama pemilik hak</li>
+    <li>Tanda tangan elektronik atau fisik</li>
+  </ol>
+  <h2>Waktu Respons</h2>
+  <p>Kami berkomitmen merespons laporan DMCA yang valid dalam <strong style="color:var(--accent);">48-72 jam</strong> kerja. Konten yang dilaporkan akan ditinjau dan jika valid, dihapus dari platform.</p>
+  <h2>Counter-Notice</h2>
+  <p>Jika konten kamu dihapus dan kamu percaya bahwa penghapusan tersebut tidak tepat, kamu berhak mengajukan counter-notice dengan informasi yang relevan.</p>
+  <h2>Penyalahgunaan</h2>
+  <p>Laporan DMCA yang palsu atau menyesatkan dapat dikenai sanksi hukum. Pastikan laporan kamu akurat dan jujur.</p>
+  <div class="highlight-box">
+    <p>Kirim laporan DMCA melalui <a href="chat.html">Chat Support kami</a>. Sertakan subjek: <strong>"DMCA Takedown Request"</strong>.</p>
+  </div>
+</main>
+<footer>
+  <a href="/" class="logo">NARA<span>VERSE</span></a>
+  <p>© 2026 Naraverse. All Rights Reserved. 18+</p>
+</footer>
+</body>
+</html>
