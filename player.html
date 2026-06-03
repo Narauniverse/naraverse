@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player — Naraverse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--red:#e60000;--red-dim:#991100;--red-glow:rgba(230,0,0,0.15);--dark:#080808;--surface:#111;--surface2:#181818;--border:rgba(255,255,255,0.06);--border-red:rgba(230,0,0,0.22);--text:#e8e8e8;--muted:#666;--accent:#ff3333;}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+
+    /* HEADER */
+    header{background:rgba(8,8,8,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-red);position:sticky;top:0;z-index:200;}
+    .header-inner{max-width:1400px;margin:0 auto;padding:0 4%;height:60px;display:flex;align-items:center;gap:20px;}
+    .logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:3px;color:#fff;text-decoration:none;}
+    .logo span{color:var(--red);}
+    .back-btn{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13.5px;text-decoration:none;margin-left:auto;transition:.2s;}
+    .back-btn:hover{color:var(--text);}
+    .back-btn svg{width:16px;height:16px;}
+
+    /* AD TOP */
+    .ad-player-top{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:10px 4%;min-height:90px;position:relative;}
+    .ad-player-top::before{content:'ADVERTISEMENT';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.5;}
+    /* ============================================================
+       🔴 IKLAN SLOT — ATAS PLAYER (728x90)
+       Ganti isi .ad-player-top__slot dengan kode iklan lo
+       ============================================================ */
+    .ad-player-top__slot{width:728px;max-width:100%;height:90px;display:flex;align-items:center;justify-content:center;border:1px dashed var(--border-red);border-radius:6px;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;}
+
+    /* LAYOUT */
+    .player-layout{max-width:1400px;margin:0 auto;padding:28px 4%;display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+
+    /* PLAYER WRAP */
+    .player-col{}
+    .video-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;width:100%;}
+    #videoPlayer{width:100%;height:100%;display:block;}
+
+    /* AD OVERLAY — muncul ketika user klik play/episode */
+    #adOverlay{position:absolute;inset:0;background:rgba(0,0,0,0.92);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+    #adOverlay.show{display:flex;}
+    .ad-overlay-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);}
+    /* ============================================================
+       🔴 IKLAN SLOT — OVERLAY VIDEO (300x250 / sesuaikan)
+       Ganti isi #adOverlaySlot dengan kode iklan lo
+       ============================================================ */
+    #adOverlaySlot{width:300px;height:250px;max-width:90vw;border:1px dashed var(--border-red);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;}
+    .ad-skip-bar{width:300px;max-width:90vw;}
+    .ad-skip-track{width:100%;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+    .ad-skip-fill{height:100%;background:var(--red);width:0%;transition:width .1s linear;}
+    .ad-skip-btn{margin-top:10px;height:36px;padding:0 20px;background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px;}
+    .ad-skip-btn:not(:disabled):hover{border-color:var(--accent);color:var(--accent);}
+    .ad-skip-btn:disabled{opacity:.5;cursor:not-allowed;}
+    .ad-countdown{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-top:4px;}
+
+    /* THUMBNAIL OVERLAY (before play) */
+    #thumbOverlay{position:absolute;inset:0;z-index:30;cursor:pointer;}
+    #thumbOverlay img{width:100%;height:100%;object-fit:cover;}
+    #thumbOverlay .play-circle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);}
+    #thumbOverlay .play-circle div{width:70px;height:70px;background:rgba(230,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+    #thumbOverlay .play-circle svg{width:28px;height:28px;fill:#fff;margin-left:4px;}
+
+    /* VIDEO INFO */
+    .video-info{margin-top:20px;}
+    .video-info h1{font-size:20px;font-weight:600;line-height:1.4;margin-bottom:10px;}
+    .video-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+    .meta-tag{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);}
+    .cat-pill{font-size:12px;color:var(--accent);background:rgba(230,0,0,0.1);border:1px solid rgba(230,0,0,0.2);padding:3px 10px;border-radius:4px;}
+    .video-desc{font-size:14px;color:#aaa;line-height:1.7;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+
+    /* EPISODE SIDEBAR */
+    .ep-col{}
+    .ep-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:sticky;top:80px;}
+    .ep-box-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .ep-box-header h3{font-size:14px;font-weight:600;}
+    .ep-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+    .ep-list{display:flex;flex-direction:column;max-height:480px;overflow-y:auto;}
+    .ep-item{display:flex;align-items:center;gap:14px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--border);transition:.2s;}
+    .ep-item:last-child{border-bottom:none;}
+    .ep-item:hover{background:var(--surface2);}
+    .ep-item.active{background:rgba(230,0,0,0.08);border-left:2px solid var(--red);}
+    .ep-number{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;color:var(--red);width:32px;flex-shrink:0;line-height:1;}
+    .ep-info{flex:1;min-width:0;}
+    .ep-title{font-size:13.5px;font-weight:500;}
+    .ep-sub{font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+    .ep-playing{font-size:10px;color:var(--accent);font-family:'DM Mono',monospace;letter-spacing:1px;}
+
+    /* RELATED */
+    .related-section{margin-top:28px;}
+    .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:16px;}
+    .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+    .rel-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
+    .rel-card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,0.5);}
+    .rel-thumb{position:relative;padding-top:58%;overflow:hidden;}
+    .rel-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+    .rel-card:hover .rel-thumb img{transform:scale(1.06);}
+    .rel-info{padding:11px;}
+    .rel-info h4{font-size:13px;font-weight:500;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px;}
+    .rel-cat{font-size:11px;color:var(--accent);}
+
+    /* AD BOTTOM */
+    .ad-player-bottom{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:14px 4%;min-height:100px;position:relative;margin-top:32px;}
+    .ad-player-bottom::before{content:'ADVERTISEMENT';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.5;}
+    /* ============================================================
+       🔴 IKLAN SLOT — BAWAH PLAYER (970x90)
+       Ganti isi .ad-player-bottom__slot dengan kode iklan lo
+       ============================================================ */
+    .ad-player-bottom__slot{width:970px;max-width:100%;height:90px;display:flex;align-items:center;justify-content:center;border:1px dashed var(--border-red);border-radius:6px;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;}
+
+    /* LOADER */
+    .loader{display:flex;align-items:center;justify-content:center;padding:80px;grid-column:1/-1;}
+    .spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* MOBILE */
+    @media(max-width:900px){
+      .player-layout{grid-template-columns:1fr;}
+      .ep-col{order:-1;}
+      .ep-box{position:static;}
+      .ep-list{max-height:220px;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">NARA<span>VERSE</span></a>
+    <a href="/" class="back-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Kembali
+    </a>
+  </div>
+</header>
+
+<div class="ad-player-top">
+  <div class="ad-player-top__slot">
+    <!-- 🔴 GANTI DENGAN KODE IKLAN LO (728x90) -->
+    AD SLOT — 728 × 90
+  </div>
+</div>
+
+<div id="playerRoot"></div>
+
+<div class="ad-player-bottom">
+  <div class="ad-player-bottom__slot">
+    <!-- 🔴 GANTI DENGAN KODE IKLAN LO (970x90) -->
+    AD SLOT — 970 × 90
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--border-red);padding:28px 4%;text-align:center;margin-top:0;">
+  <a href="/" class="logo" style="font-size:1.4rem;display:block;margin-bottom:8px;">NARA<span>VERSE</span></a>
+  <p style="color:var(--muted);font-size:12.5px;">© 2026 Naraverse • 18+</p>
+</footer>
+
+<!-- AD OVERLAY -->
+<div id="adOverlay">
+  <div class="ad-overlay-label">ADVERTISEMENT — Video akan mulai setelah iklan</div>
+  <div id="adOverlaySlot">
+    <!-- 🔴 GANTI DENGAN KODE IKLAN LO (300x250) -->
+    AD SLOT — 300 × 250
+  </div>
+  <div class="ad-skip-bar">
+    <div class="ad-skip-track"><div class="ad-skip-fill" id="adFill"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+      <span class="ad-countdown" id="adCountdown">Skip dalam 5s</span>
+      <button class="ad-skip-btn" id="adSkipBtn" disabled onclick="skipAd()">Lewati Iklan →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const WORKER = "https://naraverse.slibawblewer.workers.dev";
+  const AD_DURATION = 5; // detik sebelum bisa skip
+
+  const params = new URLSearchParams(location.search);
+  const videoId = params.get('id');
+
+  let videoData = null;
+  let currentEp = 0;
+  let adTimer = null;
+  let pendingPlay = null; // fungsi yang jalan setelah iklan selesai
+
+  // ─── LOAD VIDEO ───
+  async function init() {
+    document.getElementById('playerRoot').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+    if (!videoId) { showError('ID video tidak ditemukan.'); return; }
+    try {
+      const res = await fetch(`${WORKER}/api/videos`);
+      const all = await res.json();
+      videoData = all.find(v => String(v.id) === String(videoId));
+      if (!videoData) { showError('Video tidak ditemukan.'); return; }
+      // pastikan episodes ada
+      if (!videoData.episodes || !videoData.episodes.length) {
+        videoData.episodes = [videoData.videoUrl].filter(Boolean);
+      }
+      const related = all.filter(v => String(v.id) !== String(videoId) && v.category === videoData.category).slice(0, 8);
+      renderPlayer(related);
+    } catch(e) {
+      showError('Gagal memuat video.');
+    }
+  }
+
+  function renderPlayer(related) {
+    const v = videoData;
+    const hasEps = v.episodes && v.episodes.length > 1;
+
+    document.title = v.title + ' — Naraverse';
+
+    document.getElementById('playerRoot').innerHTML = `
+      <div class="player-layout">
+        <div class="player-col">
+          <div class="video-wrap" id="videoWrap">
+            <div id="thumbOverlay">
+              <img src="${esc(v.thumbnail)}" alt="${esc(v.title)}">
+              <div class="play-circle">
+                <div><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+              </div>
+            </div>
+            <video id="videoPlayer" controls style="display:none;" preload="metadata">
+              <source id="videoSource" src="" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-info">
+            <h1>${esc(v.title)}</h1>
+            <div class="video-meta">
+              <span class="cat-pill">${esc(v.category||'Uncategorized')}</span>
+              ${v.duration ? `<span class="meta-tag">⏱ ${esc(v.duration)}</span>` : ''}
+              ${hasEps ? `<span class="meta-tag">${v.episodes.length} Episode</span>` : ''}
+            </div>
+            ${v.description ? `<div class="video-desc">${esc(v.description)}</div>` : ''}
+          </div>
+          ${related.length ? `
+          <div class="related-section">
+            <div class="section-label">VIDEO TERKAIT</div>
+            <div class="related-grid">
+              ${related.map(r => `
+                <div class="rel-card" onclick="window.open('player.html?id=${r.id}','_self')">
+                  <div class="rel-thumb"><img src="${esc(r.thumbnail)}" alt="${esc(r.title)}" loading="lazy"></div>
+                  <div class="rel-info">
+                    <h4>${esc(r.title)}</h4>
+                    <div class="rel-cat">${esc(r.category||'')}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+
+        ${hasEps ? `
+        <div class="ep-col">
+          <div class="ep-box">
+            <div class="ep-box-header">
+              <h3>Episode</h3>
+              <span class="ep-count">${v.episodes.length} ep</span>
+            </div>
+            <div class="ep-list" id="epList">
+              ${v.episodes.map((url, i) => `
+                <div class="ep-item ${i===0?'active':''}" id="ep-${i}" onclick="playEpisode(${i})">
+                  <div class="ep-number">${i+1}</div>
+                  <div class="ep-info">
+                    <div class="ep-title">Episode ${i+1}</div>
+                    ${i===0 ? '<div class="ep-playing">▶ SEKARANG</div>' : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>` : ''}
+      </div>
+    `;
+
+    // bind thumbnail click = trigger ad then play ep 0
+    document.getElementById('thumbOverlay').addEventListener('click', () => {
+      triggerAd(() => startPlay(0));
+    });
+  }
+
+  // ─── PLAY EPISODE ───
+  function playEpisode(idx) {
+    if (idx === currentEp) return;
+    triggerAd(() => startPlay(idx));
+  }
+
+  function startPlay(idx) {
+    currentEp = idx;
+    const url = videoData.episodes[idx];
+    const player = document.getElementById('videoPlayer');
+    const source = document.getElementById('videoSource');
+    const overlay = document.getElementById('thumbOverlay');
+
+    if (overlay) overlay.style.display = 'none';
+    source.src = url;
+    player.load();
+    player.style.display = 'block';
+    player.play().catch(()=>{});
+
+    // update ep list UI
+    document.querySelectorAll('.ep-item').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+      const sub = el.querySelector('.ep-playing');
+      if (sub) sub.remove();
+      if (i === idx) {
+        const d = document.createElement('div');
+        d.className = 'ep-playing';
+        d.textContent = '▶ SEKARANG';
+        el.querySelector('.ep-info').appendChild(d);
+      }
+    });
+  }
+
+  // ─── AD LOGIC ───
+  function triggerAd(callback) {
+    pendingPlay = callback;
+    const overlay = document.getElementById('adOverlay');
+    const fill = document.getElementById('adFill');
+    const countdown = document.getElementById('adCountdown');
+    const skipBtn = document.getElementById('adSkipBtn');
+
+    overlay.classList.add('show');
+    fill.style.width = '0%';
+    skipBtn.disabled = true;
+    countdown.textContent = `Skip dalam ${AD_DURATION}s`;
+
+    let elapsed = 0;
+    const interval = 100;
+    clearInterval(adTimer);
+    adTimer = setInterval(() => {
+      elapsed += interval;
+      const pct = Math.min((elapsed / (AD_DURATION * 1000)) * 100, 100);
+      fill.style.width = pct + '%';
+      const remaining = Math.ceil((AD_DURATION * 1000 - elapsed) / 1000);
+      if (remaining > 0) {
+        countdown.textContent = `Skip dalam ${remaining}s`;
+      } else {
+        countdown.textContent = 'Siap di-skip';
+        skipBtn.disabled = false;
+        clearInterval(adTimer);
+      }
+    }, interval);
+  }
+
+  function skipAd() {
+    clearInterval(adTimer);
+    document.getElementById('adOverlay').classList.remove('show');
+    if (pendingPlay) { pendingPlay(); pendingPlay = null; }
+  }
+
+  function showError(msg) {
+    document.getElementById('playerRoot').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;padding:100px 20px;text-align:center;flex-direction:column;gap:16px;">
+        <svg fill="none" stroke="#666" stroke-width="1.5" viewBox="0 0 24 24" width="60" height="60"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+        <p style="color:var(--muted);font-size:16px;">${msg}</p>
+        <a href="/" style="color:var(--accent);font-size:14px;">← Kembali ke Beranda</a>
+      </div>`;
+  }
+
+  function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  init();
+</script>
+</body>
+</html>
