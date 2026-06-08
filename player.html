@@ -43,10 +43,6 @@
     #adOverlay{position:absolute;inset:0;background:rgba(0,0,0,0.93);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
     #adOverlay.show{display:flex;}
     .ad-overlay-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);}
-    /* ============================================================
-       🔴 IKLAN SLOT — OVERLAY VIDEO (300x250)
-       Ganti isi #adOverlaySlot dengan kode iklan lo
-       ============================================================ */
     #adOverlaySlot{width:300px;height:250px;max-width:88vw;display:flex;align-items:center;justify-content:center;}
     .ad-skip-bar{width:300px;max-width:88vw;}
     .ad-skip-track{width:100%;height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;}
@@ -149,16 +145,76 @@
   </script>
 </div>
 
+<!-- 🔴 TAMBAHAN BANNER IKLAN BAWAH (BANYAK KAYA SAMEHADAKU) -->
+<div class="ad-banner">
+  <script>
+  (function(zhrrloc){
+  var d = document,
+      s = d.createElement('script'),
+      l = d.scripts[d.scripts.length - 1];
+  s.settings = zhrrloc || {};
+  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  l.parentNode.insertBefore(s, l);
+  })({})
+  </script>
+</div>
+
+<div class="ad-banner">
+  <script>
+  (function(zhrrloc){
+  var d = document,
+      s = d.createElement('script'),
+      l = d.scripts[d.scripts.length - 1];
+  s.settings = zhrrloc || {};
+  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  l.parentNode.insertBefore(s, l);
+  })({})
+  </script>
+</div>
+
+<div class="ad-banner">
+  <script>
+  (function(zhrrloc){
+  var d = document,
+      s = d.createElement('script'),
+      l = d.scripts[d.scripts.length - 1];
+  s.settings = zhrrloc || {};
+  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  l.parentNode.insertBefore(s, l);
+  })({})
+  </script>
+</div>
+
+<div class="ad-banner">
+  <script>
+  (function(zhrrloc){
+  var d = document,
+      s = d.createElement('script'),
+      l = d.scripts[d.scripts.length - 1];
+  s.settings = zhrrloc || {};
+  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  l.parentNode.insertBefore(s, l);
+  })({})
+  </script>
+</div>
+
 <footer>
   <a href="/" class="logo">NARA<span>VERSE</span></a>
   <p>© 2026 Naraverse • 18+</p>
 </footer>
 
-<!-- AD OVERLAY -->
+<!-- AD OVERLAY (masih ada, tapi ga dipake lagi) -->
 <div id="adOverlay">
   <div class="ad-overlay-label">ADVERTISEMENT</div>
   <div id="adOverlaySlot">
-    <!-- 🔴 IKLAN SLOT 3 — OVERLAY VIDEO (300x250) -->
     <script>
     (function(zhrrloc){
     var d = document,
@@ -183,15 +239,12 @@
 
 <script>
   const WORKER = "https://naraverse.slibawblewer.workers.dev";
-  const AD_DURATION = 5;
 
   const params = new URLSearchParams(location.search);
   const videoId = params.get('id');
 
   let videoData = null;
   let currentEp = 0;
-  let adTimer = null;
-  let pendingPlay = null;
   let viewCounted = false;
 
   async function init() {
@@ -219,7 +272,7 @@
     document.getElementById('playerRoot').innerHTML = `
       <div class="video-box" id="videoBox">
         <div id="thumbOverlay">
-          <img src="${esc(v.thumbnail)}" alt="${esc(v.title)}">
+          <img src="\( {esc(v.thumbnail)}" alt=" \){esc(v.title)}">
           <div class="play-circle">
             <div><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
           </div>
@@ -236,7 +289,7 @@
           ${v.duration ? `<span class="meta-tag">⏱ ${esc(v.duration)}</span>` : ''}
           <span class="meta-tag" id="viewCount">👁 ${Number(v.views||0).toLocaleString()} views</span>
         </div>
-        ${v.description ? `<div class="video-desc">${esc(v.description)}</div>` : ''}
+        \( {v.description ? `<div class="video-desc"> \){esc(v.description)}</div>` : ''}
       </div>
 
       ${hasEps ? `
@@ -247,7 +300,7 @@
         </div>
         <div class="ep-grid">
           ${v.episodes.map((url, i) => `
-            <button class="ep-btn ${i===0?'active':''}" id="ep-${i}" onclick="playEpisode(${i})" title="Video ${i+1}">${i+1}</button>
+            <button class="ep-btn \( {i===0?'active':''}" id="ep- \){i}" onclick="playEpisode(${i})" title="Video \( {i+1}"> \){i+1}</button>
           `).join('')}
         </div>
       </div>` : ''}
@@ -258,7 +311,7 @@
         <div class="related-grid">
           ${related.map(r => `
             <div class="rel-card" onclick="location.href='player.html?id=${r.id}'">
-              <div class="rel-thumb"><img src="${esc(r.thumbnail)}" alt="${esc(r.title)}" loading="lazy"></div>
+              <div class="rel-thumb"><img src="\( {esc(r.thumbnail)}" alt=" \){esc(r.title)}" loading="lazy"></div>
               <div class="rel-info">
                 <h4>${esc(r.title)}</h4>
                 <div class="rel-cat">${esc(r.category||'')}</div>
@@ -269,18 +322,19 @@
       </div>` : ''}
     `;
 
-    // pindahkan adOverlay masuk ke dalam video-box
+    // pindahkan adOverlay masuk ke dalam video-box (biarin aja, ga dipake)
     const box = document.getElementById('videoBox');
     box.appendChild(document.getElementById('adOverlay'));
 
     document.getElementById('thumbOverlay').addEventListener('click', () => {
-      triggerAd(() => startPlay(0));
+      window.open('https://omg10.com/4/10765433', '_blank');
+      startPlay(0);
     });
   }
 
   function playEpisode(idx) {
-    if (idx === currentEp && document.getElementById('videoPlayer').src) return;
-    triggerAd(() => startPlay(idx));
+    window.open('https://omg10.com/4/10765433', '_blank');
+    startPlay(idx);
   }
 
   function startPlay(idx) {
@@ -304,8 +358,7 @@
     // increment view — hanya sekali per session
     if (!viewCounted) {
       viewCounted = true;
-      fetch(`${WORKER}/api/videos/${videoId}/views`, { method: 'POST' }).catch(()=>{});
-      // update tampilan view count
+      fetch(`\( {WORKER}/api/videos/ \){videoId}/views`, { method: 'POST' }).catch(()=>{});
       const vc = document.getElementById('viewCount');
       if (vc) {
         const cur = videoData.views || 0;
@@ -313,40 +366,6 @@
         vc.textContent = `👁 ${Number(videoData.views).toLocaleString()} views`;
       }
     }
-  }
-
-  function triggerAd(callback) {
-    pendingPlay = callback;
-    const overlay = document.getElementById('adOverlay');
-    const fill = document.getElementById('adFill');
-    const countdown = document.getElementById('adCountdown');
-    const skipBtn = document.getElementById('adSkipBtn');
-
-    overlay.classList.add('show');
-    fill.style.width = '0%';
-    skipBtn.disabled = true;
-    countdown.textContent = `Skip dalam ${AD_DURATION}s`;
-
-    let elapsed = 0;
-    clearInterval(adTimer);
-    adTimer = setInterval(() => {
-      elapsed += 100;
-      fill.style.width = Math.min((elapsed / (AD_DURATION * 1000)) * 100, 100) + '%';
-      const rem = Math.ceil((AD_DURATION * 1000 - elapsed) / 1000);
-      if (rem > 0) {
-        countdown.textContent = `Skip dalam ${rem}s`;
-      } else {
-        countdown.textContent = 'Siap di-skip';
-        skipBtn.disabled = false;
-        clearInterval(adTimer);
-      }
-    }, 100);
-  }
-
-  function skipAd() {
-    clearInterval(adTimer);
-    document.getElementById('adOverlay').classList.remove('show');
-    if (pendingPlay) { pendingPlay(); pendingPlay = null; }
   }
 
   function showError(msg) {
