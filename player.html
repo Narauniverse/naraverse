@@ -145,7 +145,7 @@
   </script>
 </div>
 
-<!-- 🔴 TAMBAHAN BANNER IKLAN BAWAH (BANYAK KAYA SAMEHADAKU) -->
+<!-- 🔴 TAMBAHAN 4 BANNER BAWAH (total 6 banner, persis kaya yang di atas) -->
 <div class="ad-banner">
   <script>
   (function(zhrrloc){
@@ -211,7 +211,7 @@
   <p>© 2026 Naraverse • 18+</p>
 </footer>
 
-<!-- AD OVERLAY (masih ada, tapi ga dipake lagi) -->
+<!-- AD OVERLAY (tetap ada, ga dihapus) -->
 <div id="adOverlay">
   <div class="ad-overlay-label">ADVERTISEMENT</div>
   <div id="adOverlaySlot">
@@ -239,12 +239,15 @@
 
 <script>
   const WORKER = "https://naraverse.slibawblewer.workers.dev";
+  const AD_DURATION = 5;
 
   const params = new URLSearchParams(location.search);
   const videoId = params.get('id');
 
   let videoData = null;
   let currentEp = 0;
+  let adTimer = null;
+  let pendingPlay = null;
   let viewCounted = false;
 
   async function init() {
@@ -322,7 +325,6 @@
       </div>` : ''}
     `;
 
-    // pindahkan adOverlay masuk ke dalam video-box (biarin aja, ga dipake)
     const box = document.getElementById('videoBox');
     box.appendChild(document.getElementById('adOverlay'));
 
@@ -333,6 +335,7 @@
   }
 
   function playEpisode(idx) {
+    if (idx === currentEp && document.getElementById('videoPlayer').src) return;
     window.open('https://omg10.com/4/10765433', '_blank');
     startPlay(idx);
   }
@@ -350,12 +353,10 @@
     player.style.display = 'block';
     player.play().catch(()=>{});
 
-    // update episode buttons
     document.querySelectorAll('.ep-btn').forEach((el, i) => {
       el.classList.toggle('active', i === idx);
     });
 
-    // increment view — hanya sekali per session
     if (!viewCounted) {
       viewCounted = true;
       fetch(`\( {WORKER}/api/videos/ \){videoId}/views`, { method: 'POST' }).catch(()=>{});
@@ -366,6 +367,40 @@
         vc.textContent = `👁 ${Number(videoData.views).toLocaleString()} views`;
       }
     }
+  }
+
+  function triggerAd(callback) {
+    pendingPlay = callback;
+    const overlay = document.getElementById('adOverlay');
+    const fill = document.getElementById('adFill');
+    const countdown = document.getElementById('adCountdown');
+    const skipBtn = document.getElementById('adSkipBtn');
+
+    overlay.classList.add('show');
+    fill.style.width = '0%';
+    skipBtn.disabled = true;
+    countdown.textContent = `Skip dalam ${AD_DURATION}s`;
+
+    let elapsed = 0;
+    clearInterval(adTimer);
+    adTimer = setInterval(() => {
+      elapsed += 100;
+      fill.style.width = Math.min((elapsed / (AD_DURATION * 1000)) * 100, 100) + '%';
+      const rem = Math.ceil((AD_DURATION * 1000 - elapsed) / 1000);
+      if (rem > 0) {
+        countdown.textContent = `Skip dalam ${rem}s`;
+      } else {
+        countdown.textContent = 'Siap di-skip';
+        skipBtn.disabled = false;
+        clearInterval(adTimer);
+      }
+    }, 100);
+  }
+
+  function skipAd() {
+    clearInterval(adTimer);
+    document.getElementById('adOverlay').classList.remove('show');
+    if (pendingPlay) { pendingPlay(); pendingPlay = null; }
   }
 
   function showError(msg) {
