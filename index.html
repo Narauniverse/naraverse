@@ -292,16 +292,23 @@
    own fresh script tag so all 4 load
    ══════════════════════════════════════ */
 (function injectAds() {
-  var slots = ['adSlot1','adSlot2','adSlot3','adSlot4'];
-  var src = "//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";
-  slots.forEach(function(id) {
-    var container = document.getElementById(id);
+  var ads = [
+    // Slot 1 — script lama
+    { id: 'adSlot1', src: '//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh' },
+    // Slot 2
+    { id: 'adSlot2', src: '//deliciouslip.com/b-XiV.sqdNG-lz0/YmWrcE/Ce/m/9butZBURlkk/PBTGcUxsMBTekLxrOSTLMAtJNnzfEhxXOrTMER5/NHwM' },
+    // Slot 3
+    { id: 'adSlot3', src: '//deliciouslip.com/bXXqVvsrd.G/l/0/YMWncR/YemmF9puJZEUtlukzPXTnc_xAMUTIkiydMhDoklt/NOzPE_xsOeTYI/xSMQwi' },
+    // Slot 4
+    { id: 'adSlot4', src: '//deliciouslip.com/b.XbVusud/GulI0yYPWdcX/Aeamo9JuwZBU/lfkpPvTvcEx/MlTRkByhMfjqUEtaNMzaESxJO/TbIzyZOEQ_' }
+  ];
+  ads.forEach(function(ad) {
+    var container = document.getElementById(ad.id);
     if (!container) return;
-    // Wrap in iframe-less isolated div so scripts don't block each other
     var wrap = document.createElement('div');
     wrap.style.cssText = 'width:100%;display:flex;align-items:center;justify-content:center;';
     var s = document.createElement('script');
-    s.src = src;
+    s.src = ad.src;
     s.async = true;
     s.referrerPolicy = 'no-referrer-when-downgrade';
     wrap.appendChild(s);
