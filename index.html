@@ -56,7 +56,7 @@
     .ad-top-wrap{max-width:1400px;margin:0 auto;padding:14px 4%;}
     .ad-top-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.5;text-align:center;margin-bottom:8px;}
     .ad-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .ad-slot{background:rgba(14,14,18,0.85);border:1px solid var(--border);border-radius:8px;min-height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+    .ad-slot{background:rgba(14,14,18,0.85);border:1px solid var(--border);border-radius:8px;height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;} .ad-slot>div{width:250px!important;height:100px!important;overflow:hidden;flex-shrink:0;}
 
     /* FILTER */
     .filter-bar{max-width:1400px;margin:0 auto;padding:0 4%;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
@@ -71,7 +71,7 @@
     .stats-text span{color:var(--accent);}
 
     /* ── VIDEO GRID — YouTube style, 6 col ── */
-    .grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:14px;padding:16px 4% 32px;}
+    .grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:16px 4% 32px;}
 
     .card{background:transparent;border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.22,1,.36,1);border:none;}
     .card:hover{transform:translateY(-4px);}
@@ -114,12 +114,9 @@
 
     /* FOOTER */
     footer{border-top:1px solid var(--border-red);padding:44px 4% 32px;}
-    .footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
     .footer-brand .logo{font-size:1.6rem;display:block;margin-bottom:12px;}
     .footer-brand p{font-size:13px;color:var(--muted);line-height:1.75;max-width:240px;}
-    .footer-col h4{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;}
-    .footer-col a{display:block;font-size:13.5px;color:#999;text-decoration:none;margin-bottom:10px;transition:color .2s;}
-    .footer-col a:hover{color:var(--accent);}
     .footer-bottom{max-width:1400px;margin:28px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
     .footer-bottom p{font-size:12px;color:var(--muted);}
     .footer-badges{display:flex;align-items:center;gap:8px;}
@@ -146,18 +143,18 @@
     #backToTop svg{width:20px;height:20px;stroke:#fff;}
 
     /* RESPONSIVE */
-    @media(max-width:1200px){.grid{grid-template-columns:repeat(5,1fr);}}
+    @media(max-width:1200px){.grid{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:960px){
-      .grid{grid-template-columns:repeat(4,1fr);}
+      .grid{grid-template-columns:repeat(2,1fr);}
       .nav-right .nav-btn{display:none;}
       .hamburger{display:flex;}
-      .footer-inner{grid-template-columns:1fr 1fr;gap:28px;}
+      
     }
-    @media(max-width:720px){.grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:520px){
       .grid{grid-template-columns:repeat(2,1fr);gap:10px;}
       .ad-top-grid{grid-template-columns:1fr;}
-      .footer-inner{grid-template-columns:1fr;}
+      
       .logo::after{display:none;}
       .card-info h3{font-size:12px;}
     }
@@ -241,26 +238,8 @@
       <span class="logo">NARA<span>VERSE</span></span>
       <p>Platform streaming premium. Konten eksklusif dari berbagai kategori. 18+ only.</p>
     </div>
-    <div class="footer-col">
-      <h4>NAVIGASI</h4>
-      <a href="/">Beranda</a>
-      <a href="#" onclick="openCategories()">Kategori</a>
-      <a href="#" onclick="openFavorites()">Favorit</a>
-    </div>
-    <div class="footer-col">
-      <h4>INFO</h4>
-      <a href="#">Tentang Kami</a>
-      <a href="#">Kebijakan Privasi</a>
-      <a href="#">Syarat & Ketentuan</a>
-      <a href="#">DMCA</a>
-    </div>
-    <div class="footer-col">
-      <h4>SUPPORT</h4>
-      <a href="#">Hubungi Kami</a>
-      <a href="#">Iklan</a>
-      <a href="#">FAQ</a>
-    </div>
-  </div>
+
+</div>
   <div class="footer-bottom">
     <p>© 2026 Naraverse. All Rights Reserved.</p>
     <div class="footer-badges">
