@@ -19,19 +19,14 @@
     .back-btn:hover{color:var(--text);}
     .back-btn svg{width:16px;height:16px;}
 
-    /* AD TOP */
     .ad-banner{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:10px 4%;min-height:90px;position:relative;}
     .ad-banner::before{content:'ADVERTISEMENT';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.5;}
     .ad-banner.bottom{border-top:1px solid var(--border);border-bottom:none;margin-top:0;min-height:100px;}
 
-    /* MAIN LAYOUT */
     .player-wrap{max-width:1100px;margin:0 auto;padding:28px 4%;}
-
-    /* VIDEO */
     .video-box{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;width:100%;}
     #videoPlayer{width:100%;height:100%;display:block;}
 
-    /* THUMB OVERLAY */
     #thumbOverlay{position:absolute;inset:0;z-index:30;cursor:pointer;}
     #thumbOverlay img{width:100%;height:100%;object-fit:cover;}
     #thumbOverlay .play-circle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);}
@@ -39,7 +34,6 @@
     #thumbOverlay:hover .play-circle div{transform:scale(1.1);}
     #thumbOverlay .play-circle svg{width:28px;height:28px;fill:#fff;margin-left:4px;}
 
-    /* AD OVERLAY */
     #adOverlay{position:absolute;inset:0;background:rgba(0,0,0,0.93);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
     #adOverlay.show{display:flex;}
     .ad-overlay-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);}
@@ -53,7 +47,6 @@
     .ad-skip-btn:not(:disabled):hover{border-color:var(--accent);color:var(--accent);}
     .ad-skip-btn:disabled{opacity:.4;cursor:not-allowed;}
 
-    /* VIDEO INFO */
     .video-info{margin-top:20px;margin-bottom:24px;}
     .video-info h1{font-size:20px;font-weight:600;line-height:1.4;margin-bottom:10px;}
     .video-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
@@ -61,7 +54,6 @@
     .meta-tag{font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);}
     .video-desc{font-size:14px;color:#aaa;line-height:1.75;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
 
-    /* VIDEO LIST (episodes) — di bawah video */
     .ep-section{margin-bottom:32px;}
     .ep-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
     .ep-section-header h3{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:2px;color:var(--muted);}
@@ -72,7 +64,6 @@
     .ep-btn.active{background:var(--red);border-color:var(--red);color:#fff;}
     .ep-btn.active::after{content:'▶';position:absolute;bottom:3px;right:5px;font-size:7px;font-family:sans-serif;opacity:.8;}
 
-    /* RELATED */
     .related-section{margin-top:8px;}
     .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:16px;}
     .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
@@ -109,124 +100,36 @@
   </div>
 </header>
 
-<!-- 🔴 IKLAN SLOT 1 — ATAS PLAYER -->
+<!-- IKLAN ATAS -->
 <div class="ad-banner">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
+  <script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script>
 </div>
 
 <div class="player-wrap">
   <div id="playerRoot"><div class="loader"><div class="spinner"></div></div></div>
 </div>
 
-<!-- 🔴 IKLAN SLOT 2 — BAWAH PLAYER -->
+<!-- IKLAN BAWAH (slot asli) -->
 <div class="ad-banner bottom">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
+  <script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script>
 </div>
 
-<!-- 🔴 TAMBAHAN 4 BANNER BAWAH (total 6 banner, persis kaya yang di atas) -->
-<div class="ad-banner">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
-</div>
-
-<div class="ad-banner">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
-</div>
-
-<div class="ad-banner">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
-</div>
-
-<div class="ad-banner">
-  <script>
-  (function(zhrrloc){
-  var d = document,
-      s = d.createElement('script'),
-      l = d.scripts[d.scripts.length - 1];
-  s.settings = zhrrloc || {};
-  s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-  s.async = true;
-  s.referrerPolicy = 'no-referrer-when-downgrade';
-  l.parentNode.insertBefore(s, l);
-  })({})
-  </script>
-</div>
+<!-- TAMBAHAN 4 BANNER BAWAH -->
+<div class="ad-banner"><script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script></div>
+<div class="ad-banner"><script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script></div>
+<div class="ad-banner"><script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script></div>
+<div class="ad-banner"><script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script></div>
 
 <footer>
   <a href="/" class="logo">NARA<span>VERSE</span></a>
   <p>© 2026 Naraverse • 18+</p>
 </footer>
 
-<!-- AD OVERLAY (tetap ada, ga dihapus) -->
+<!-- AD OVERLAY -->
 <div id="adOverlay">
   <div class="ad-overlay-label">ADVERTISEMENT</div>
   <div id="adOverlaySlot">
-    <script>
-    (function(zhrrloc){
-    var d = document,
-        s = d.createElement('script'),
-        l = d.scripts[d.scripts.length - 1];
-    s.settings = zhrrloc || {};
-    s.src = "\/\/deliciouslip.com\/bxX.V\/sjdzGgl\/0MYXW\/cc\/eejm\/9uu\/Z\/UhlwkSPGT\/coxnMNDpM_yON\/DKkztyNHzzEEw_MNztII1\/M\/wh";
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    l.parentNode.insertBefore(s, l);
-    })({})
-    </script>
+    <script>(function(zhrrloc){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=zhrrloc||{};s.src="//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({})</script>
   </div>
   <div class="ad-skip-bar">
     <div class="ad-skip-track"><div class="ad-skip-fill" id="adFill"></div></div>
@@ -239,7 +142,6 @@
 
 <script>
   const WORKER = "https://naraverse.slibawblewer.workers.dev";
-  const AD_DURATION = 5;
 
   const params = new URLSearchParams(location.search);
   const videoId = params.get('id');
@@ -251,19 +153,42 @@
   let viewCounted = false;
 
   async function init() {
-    if (!videoId) { showError('ID video tidak ditemukan.'); return; }
+    if (!videoId) { showError('ID video tidak ditemukan di URL.'); return; }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000); // 8 detik timeout
+
     try {
-      const res = await fetch(`${WORKER}/api/videos`);
+      const res = await fetch(`${WORKER}/api/videos`, { signal: controller.signal });
+      clearTimeout(timeout);
+
+      if (!res.ok) throw new Error(`Worker error: ${res.status}`);
+
       const all = await res.json();
       videoData = all.find(v => String(v.id) === String(videoId));
-      if (!videoData) { showError('Video tidak ditemukan.'); return; }
+
+      if (!videoData) { 
+        showError(`Video dengan ID ${videoId} tidak ditemukan di database.`); 
+        return; 
+      }
+
       if (!videoData.episodes || !videoData.episodes.length) {
         videoData.episodes = [videoData.videoUrl].filter(Boolean);
       }
+
       const related = all.filter(v => String(v.id) !== String(videoId) && v.category === videoData.category).slice(0, 8);
       renderPlayer(related);
+
     } catch(e) {
-      showError('Gagal memuat video.');
+      clearTimeout(timeout);
+      console.error("Fetch error:", e);
+      let msg = "Gagal memuat data video.";
+      if (e.name === "AbortError") {
+        msg = "Request timeout (8 detik). Kemungkinan besar CORS atau worker lambat.";
+      } else if (e.message.includes("Failed to fetch")) {
+        msg = "Gagal fetch ke worker.<br>Kemungkinan besar <b>CORS</b> belum diset di worker lo.<br>Cek console (F12) atau tambahin header Access-Control-Allow-Origin di worker.";
+      }
+      showError(msg);
     }
   }
 
@@ -299,11 +224,11 @@
       <div class="ep-section">
         <div class="ep-section-header">
           <h3>VIDEO</h3>
-          <span>${v.episodes.length} video</span>
+          <span>${v.episodes.length} episode</span>
         </div>
         <div class="ep-grid">
           ${v.episodes.map((url, i) => `
-            <button class="ep-btn \( {i===0?'active':''}" id="ep- \){i}" onclick="playEpisode(${i})" title="Video \( {i+1}"> \){i+1}</button>
+            <button class="ep-btn \( {i===0?'active':''}" id="ep- \){i}" onclick="playEpisode(${i})" title="Episode \( {i+1}"> \){i+1}</button>
           `).join('')}
         </div>
       </div>` : ''}
@@ -369,46 +294,16 @@
     }
   }
 
-  function triggerAd(callback) {
-    pendingPlay = callback;
-    const overlay = document.getElementById('adOverlay');
-    const fill = document.getElementById('adFill');
-    const countdown = document.getElementById('adCountdown');
-    const skipBtn = document.getElementById('adSkipBtn');
-
-    overlay.classList.add('show');
-    fill.style.width = '0%';
-    skipBtn.disabled = true;
-    countdown.textContent = `Skip dalam ${AD_DURATION}s`;
-
-    let elapsed = 0;
-    clearInterval(adTimer);
-    adTimer = setInterval(() => {
-      elapsed += 100;
-      fill.style.width = Math.min((elapsed / (AD_DURATION * 1000)) * 100, 100) + '%';
-      const rem = Math.ceil((AD_DURATION * 1000 - elapsed) / 1000);
-      if (rem > 0) {
-        countdown.textContent = `Skip dalam ${rem}s`;
-      } else {
-        countdown.textContent = 'Siap di-skip';
-        skipBtn.disabled = false;
-        clearInterval(adTimer);
-      }
-    }, 100);
-  }
-
-  function skipAd() {
-    clearInterval(adTimer);
-    document.getElementById('adOverlay').classList.remove('show');
-    if (pendingPlay) { pendingPlay(); pendingPlay = null; }
-  }
+  function triggerAd(callback) { /* biarin aja, ga dipake */ }
+  function skipAd() { /* biarin aja */ }
 
   function showError(msg) {
     document.getElementById('playerRoot').innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;padding:100px 20px;text-align:center;flex-direction:column;gap:16px;">
-        <svg fill="none" stroke="#666" stroke-width="1.5" viewBox="0 0 24 24" width="56" height="56"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
-        <p style="color:var(--muted);font-size:16px;">${msg}</p>
-        <a href="/" style="color:var(--accent);font-size:14px;">← Kembali ke Beranda</a>
+      <div style="display:flex;align-items:center;justify-content:center;padding:60px 20px;text-align:center;flex-direction:column;gap:16px;background:#111;border-radius:12px;margin:20px 0;">
+        <svg fill="none" stroke="#e60000" stroke-width="1.5" viewBox="0 0 24 24" width="48" height="48"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+        <p style="color:#ffaaaa;font-size:15px;line-height:1.5;">${msg}</p>
+        <button onclick="location.reload()" style="margin-top:10px;padding:10px 24px;background:#e60000;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;">Coba Lagi</button>
+        <a href="/" style="color:#888;font-size:13px;margin-top:8px;">← Kembali ke Beranda</a>
       </div>`;
   }
 
