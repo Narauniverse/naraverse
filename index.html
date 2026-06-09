@@ -61,11 +61,11 @@
     .hamburger{display:none;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);border-radius:8px;flex-direction:column;gap:5px;}
     .hamburger span{width:18px;height:1.5px;background:var(--text);border-radius:2px;transition:all .3s;}
 
-    /* ── AD BANNER — 2 SLOT SIDE BY SIDE ── */
+    /* AD BANNER */
     .ad-top-wrap{max-width:1400px;margin:0 auto;padding:14px 4%;}
     .ad-top-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.5;text-align:center;margin-bottom:8px;}
     .ad-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .ad-slot{background:rgba(14,14,18,0.85);border:1px solid var(--border);border-radius:8px;height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;} .ad-slot>div{width:250px!important;height:100px!important;overflow:hidden;flex-shrink:0;}
+    .ad-slot{background:rgba(14,14,18,0.85);border:1px solid var(--border);border-radius:8px;height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
 
     /* FILTER */
     .filter-bar{max-width:1400px;margin:0 auto;padding:0 4%;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
@@ -79,7 +79,7 @@
     .stats-text{font-size:11.5px;color:var(--muted);font-family:'DM Mono',monospace;}
     .stats-text span{color:var(--accent);}
 
-    /* ── VIDEO GRID — YouTube style, 6 col ── */
+    /* VIDEO GRID */
     .grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:16px 4% 32px;}
 
     .card{background:transparent;border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.22,1,.36,1);border:none;}
@@ -118,9 +118,6 @@
     .page-btn.active{background:var(--red);border-color:var(--red);color:#fff;}
     .page-btn:disabled{opacity:.3;cursor:not-allowed;}
 
-    /* AD BOTTOM — same 2 slot */
-    .ad-bottom-wrap{max-width:1400px;margin:0 auto;padding:0 4% 20px;}
-
     /* FOOTER */
     footer{border-top:1px solid var(--border-red);padding:44px 4% 32px;}
     .footer-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
@@ -157,13 +154,11 @@
       .grid{grid-template-columns:repeat(2,1fr);}
       .nav-right .nav-btn{display:none;}
       .hamburger{display:flex;}
-      
     }
     @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:520px){
       .grid{grid-template-columns:repeat(2,1fr);gap:10px;}
       .ad-top-grid{grid-template-columns:1fr;}
-      
       .logo::after{display:none;}
       .card-info h3{font-size:12px;}
     }
@@ -247,8 +242,7 @@
       <span class="logo">NARA<span>VERSE</span></span>
       <p>Platform streaming premium. Konten eksklusif dari berbagai kategori. 18+ only.</p>
     </div>
-
-</div>
+  </div>
   <div class="footer-bottom">
     <p>© 2026 Naraverse. All Rights Reserved.</p>
     <div class="footer-badges">
@@ -276,31 +270,24 @@
 
 <script>
 /* ══════════════════════════════════════
-   INJECT AD SCRIPTS — each slot gets its
-   own fresh script tag so all 4 load
+   INJECT AD SCRIPTS — semua 4 slot pakai banner yang sama
    ══════════════════════════════════════ */
 (function injectAds() {
-  var ads = [
-    // Slot 1 — script lama
-    { id: 'adSlot1', src: '//deliciouslip.com/bxX.V/sjdzGgl/0MYXW/cc/eejm/9uu/Z/UhlwkSPGT/coxnMNDpM_yON/DKkztyNHzzEEw_MNztII1/M/wh' },
-    // Slot 2
-    { id: 'adSlot2', src: '//deliciouslip.com/b-XiV.sqdNG-lz0/YmWrcE/Ce/m/9butZBURlkk/PBTGcUxsMBTekLxrOSTLMAtJNnzfEhxXOrTMER5/NHwM' },
-    // Slot 3
-    { id: 'adSlot3', src: '//deliciouslip.com/bXXqVvsrd.G/l/0/YMWncR/YemmF9puJZEUtlukzPXTnc_xAMUTIkiydMhDoklt/NOzPE_xsOeTYI/xSMQwi' },
-    // Slot 4
-    { id: 'adSlot4', src: '//deliciouslip.com/b.XbVusud/GulI0yYPWdcX/Aeamo9JuwZBU/lfkpPvTvcEx/MlTRkByhMfjqUEtaNMzaESxJO/TbIzyZOEQ_' }
-  ];
-  ads.forEach(function(ad) {
-    var container = document.getElementById(ad.id);
+  var slotIds = ['adSlot1', 'adSlot2', 'adSlot3', 'adSlot4'];
+  slotIds.forEach(function(id) {
+    var container = document.getElementById(id);
     if (!container) return;
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'width:100%;display:flex;align-items:center;justify-content:center;';
-    var s = document.createElement('script');
-    s.src = ad.src;
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    wrap.appendChild(s);
-    container.appendChild(wrap);
+
+    // inject atOptions config
+    var sConfig = document.createElement('script');
+    sConfig.textContent = "atOptions = { 'key': '331d52bc7424dc4cc78435274591553f', 'format': 'iframe', 'height': 50, 'width': 320, 'params': {} };";
+    container.appendChild(sConfig);
+
+    // inject invoke script
+    var sInvoke = document.createElement('script');
+    sInvoke.src = 'https://yawncollaremotion.com/331d52bc7424dc4cc78435274591553f/invoke.js';
+    sInvoke.async = true;
+    container.appendChild(sInvoke);
   });
 })();
 
@@ -598,4 +585,3 @@ loadVideos();
 </script>
 </body>
 </html>
-
