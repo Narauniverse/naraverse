@@ -57,15 +57,6 @@ header{position:sticky;top:0;z-index:500;background:rgba(6,6,8,0.92);backdrop-fi
 .hamburger{display:none;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);border-radius:8px;flex-direction:column;gap:5px;background:transparent;}
 .hamburger span{width:18px;height:1.5px;background:var(--text);border-radius:2px;display:block;}
 
-/* BANNER */
-.banner-zone{background:rgba(8,8,10,0.8);border-bottom:1px solid var(--border);}
-.banner-zone-inner{max-width:1400px;margin:0 auto;padding:10px 4%;}
-.banner-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);opacity:.45;text-align:center;margin-bottom:8px;}
-.banner-row{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;}
-.banner-row+.banner-row{margin-top:8px;}
-.banner-slot{overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.banner-slot iframe{width:320px!important;height:50px!important;border:none!important;display:block;}
-
 /* SUBNAV */
 .subnav{background:rgba(8,8,10,0.7);border-bottom:1px solid var(--border);position:sticky;top:62px;z-index:400;backdrop-filter:blur(12px);}
 .subnav-inner{max-width:1400px;margin:0 auto;padding:0 4%;display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;height:44px;gap:0;}
@@ -279,33 +270,6 @@ footer{border-top:1px solid var(--border-red);padding:36px 4% 28px;}
   </div>
 </header>
 
-<!-- BANNER ATAS 4 SLOT (2 baris x 2) -->
-<div class="banner-zone">
-  <div class="banner-zone-inner">
-    <div class="banner-label">ADVERTISEMENT</div>
-    <div class="banner-row">
-      <div class="banner-slot">
-        <script>atOptions={'key':'331d52bc7424dc4cc78435274591553f','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/331d52bc7424dc4cc78435274591553f/invoke.js"></script>
-      </div>
-      <div class="banner-slot">
-        <script>atOptions={'key':'c4236ff13a7266412146a615175dd0eb','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/c4236ff13a7266412146a615175dd0eb/invoke.js"></script>
-      </div>
-    </div>
-    <div class="banner-row">
-      <div class="banner-slot">
-        <script>atOptions={'key':'c28e930eb07f149624bc53b64807a79e','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/c28e930eb07f149624bc53b64807a79e/invoke.js"></script>
-      </div>
-      <div class="banner-slot">
-        <script>atOptions={'key':'08adfec6db56dc6371eae2ccfbb28dd2','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/08adfec6db56dc6371eae2ccfbb28dd2/invoke.js"></script>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- SUBNAV -->
 <nav class="subnav">
   <div class="subnav-inner" id="subNav">
@@ -366,23 +330,6 @@ footer{border-top:1px solid var(--border-red);padding:36px 4% 28px;}
 
 <!-- PAGINATION -->
 <div class="pagination" id="pagination"></div>
-
-<!-- BANNER BAWAH 2 SLOT -->
-<div class="banner-zone" style="border-top:1px solid var(--border);border-bottom:none;">
-  <div class="banner-zone-inner">
-    <div class="banner-label">ADVERTISEMENT</div>
-    <div class="banner-row">
-      <div class="banner-slot">
-        <script>atOptions={'key':'a00c8f2b90dbaebede40bd6d5d377892','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/a00c8f2b90dbaebede40bd6d5d377892/invoke.js"></script>
-      </div>
-      <div class="banner-slot">
-        <script>atOptions={'key':'ccba96b60c4a1484c99edcdba95cb2ff','format':'iframe','height':50,'width':320,'params':{}};</script>
-        <script src="https://yawncollaremotion.com/ccba96b60c4a1484c99edcdba95cb2ff/invoke.js"></script>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- FOOTER -->
 <footer>
@@ -510,11 +457,6 @@ function detectAdblock() {
       var cs2 = window.getComputedStyle(b2);
       if (cs2.display === 'none' || b2.offsetHeight === 0 || !b2.offsetParent) detected = true;
       b2.remove();
-      // cek banner slot kosong
-      var slots = document.querySelectorAll('.banner-slot');
-      var empty = 0;
-      slots.forEach(function(s) { if (!s.querySelector('iframe')) empty++; });
-      if (slots.length > 0 && empty / slots.length > 0.5) detected = true;
       resolve(detected);
     }, 800);
   });
@@ -977,4 +919,3 @@ boot();
 </script>
 </body>
 </html>
-
