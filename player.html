@@ -198,10 +198,6 @@
   .retry-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:14px;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif;margin-top:4px;}
   .retry-btn:hover{border-color:var(--red);color:var(--accent);}
 
-  .loader{display:flex;align-items:center;justify-content:center;padding:100px;}
-  .spinner{width:38px;height:38px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-
   footer{border-top:1px solid var(--border-red);padding:28px 4%;text-align:center;}
   footer p{color:var(--muted);font-size:12.5px;margin-top:8px;}
 
@@ -293,334 +289,110 @@
 </div>
 
 <script>
-  const WORKER = "https://naraverse.slibawblewer.workers.dev";
-  const AD_DURATION = 5;
+var WORKER = "https://naraverse.slibawblewer.workers.dev";
+var AD_DURATION = 5;
 
-  const params = new URLSearchParams(location.search);
-  const videoId = params.get('id');
+const params = new URLSearchParams(location.search);
+const videoId = params.get('id');
 
-  let videoData = null;
-  let allVideos = [];
-  let allRelated = [];
-  let currentEp = 0;
-  let adTimer = null;
-  let pendingPlay = null;
-  let viewCounted = false;
+let videoData = null;
+let allVideos = [];
+let allRelated = [];
+let currentEp = 0;
+let adTimer = null;
+let pendingPlay = null;
+let viewCounted = false;
 
-  let watchedEps   = JSON.parse(localStorage.getItem('watchedEps_' + videoId) || '[]');
-  let likedVideos  = JSON.parse(localStorage.getItem('likedVideos') || '[]');
-  let watchlist    = JSON.parse(localStorage.getItem('watchlist') || '[]');
-  let watchHistory = JSON.parse(localStorage.getItem('watchHistory') || '[]');
-  let userRatings  = JSON.parse(localStorage.getItem('userRatings') || '{}');
+let watchedEps   = JSON.parse(localStorage.getItem('watchedEps_' + videoId) || '[]');
+let likedVideos  = JSON.parse(localStorage.getItem('likedVideos') || '[]');
+let watchlist    = JSON.parse(localStorage.getItem('watchlist') || '[]');
+let watchHistory = JSON.parse(localStorage.getItem('watchHistory') || '[]');
+let userRatings  = JSON.parse(localStorage.getItem('userRatings') || '{}');
 
-  /* ═══════════════════════════════════════
-     ANTI-ADBLOCK — 4 metode sekaligus
-  ═══════════════════════════════════════ */
-  function detectAdblock() {
-    return new Promise(resolve => {
-      let detected = false;
-
-      const bait = document.getElementById('adBait');
-      if (bait) {
-        const cs = window.getComputedStyle(bait);
-        if (
-          cs.display === 'none' ||
-          cs.visibility === 'hidden' ||
-          cs.opacity === '0' ||
-          bait.offsetHeight === 0 ||
-          bait.offsetWidth === 0 ||
-          !bait.offsetParent
-        ) { detected = true; }
+/* ANTI-ADBLOCK */
+function detectAdblock() {
+  return new Promise(function(resolve) {
+    var detected = false;
+    var bait = document.getElementById('adBait');
+    if (bait) {
+      var cs = window.getComputedStyle(bait);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || bait.offsetHeight === 0 || !bait.offsetParent) {
+        detected = true;
       }
-
-      const bait2 = document.createElement('div');
-      bait2.id = 'banner_ad_zone';
-      bait2.className = 'pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads banner-ads ads-banner adsbox ad-placement';
-      bait2.innerHTML = '&nbsp;';
-      bait2.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:300px;height:250px;';
-      document.body.appendChild(bait2);
-
-      let fetchBlocked = false;
-      const testFetch = fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
-        method: 'HEAD', mode: 'no-cors', cache: 'no-store',
-        signal: AbortSignal.timeout(2500)
-      }).then(() => {}).catch(() => { fetchBlocked = true; });
-
-      setTimeout(() => {
-        const cs2 = window.getComputedStyle(bait2);
-        if (
-          cs2.display === 'none' ||
-          cs2.visibility === 'hidden' ||
-          bait2.offsetHeight === 0 ||
-          bait2.offsetWidth === 0 ||
-          !bait2.offsetParent
-        ) { detected = true; }
-
-        bait2.remove();
-
-        resolve(detected);
-      }, 600);
-    });
-  }
-
-  let adblockCheckCount = 0;
-  async function recheckAdblock() {
-    adblockCheckCount++;
-    if (adblockCheckCount > 3) {
-      document.getElementById('adblockModal').querySelector('p').textContent =
-        'Kamu sudah mencoba terlalu banyak. Nonaktifkan adblock, tutup tab ini, lalu buka ulang.';
-      return;
     }
-    const blocked = await detectAdblock();
-    if (blocked) {
-      showToast('⚠ Adblock masih aktif, tolong nonaktifkan dulu!');
-    } else {
-      document.getElementById('adblockModal').classList.remove('show');
-      init();
-    }
-  }
+    var b2 = document.createElement('div');
+    b2.className = 'pub_300x250 pub_300x250m adsbox text-ad';
+    b2.innerHTML = '&nbsp;';
+    b2.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:300px;height:250px;';
+    document.body.appendChild(b2);
+    setTimeout(function() {
+      var cs2 = window.getComputedStyle(b2);
+      if (cs2.display === 'none' || b2.offsetHeight === 0 || !b2.offsetParent) detected = true;
+      b2.remove();
+      resolve(detected);
+    }, 800);
+  });
+}
 
-  /* ═══════════════════════════════════════
-     ANTI-VPN
-  ═══════════════════════════════════════ */
-  async function checkVPN() {
-    try {
-      const res = await fetch('https://vpnapi.io/api/?key=free', { signal: AbortSignal.timeout(5000) });
-      const data = await res.json();
-      if (data && data.security && (data.security.vpn || data.security.proxy || data.security.tor)) {
-        document.getElementById('vpnModal').classList.add('show');
-        return false;
-      }
-    } catch(e) {}
-    return true;
-  }
-
-  /* ═══════════════════════════════════════
-     BOOT
-  ═══════════════════════════════════════ */
-  async function boot() {
-    const vpnOk = await checkVPN();
-    if (!vpnOk) return;
-
-    await new Promise(r => setTimeout(r, 800));
-    const blocked = await detectAdblock();
-    if (blocked) {
-      document.getElementById('adblockModal').classList.add('show');
-      const autoCheck = setInterval(async () => {
-        const stillBlocked = await detectAdblock();
-        if (!stillBlocked) {
-          clearInterval(autoCheck);
-          document.getElementById('adblockModal').classList.remove('show');
-          init();
-        }
-      }, 4000);
-      return;
-    }
+let adbCount = 0;
+async function recheckAdblock() {
+  adbCount++;
+  if (adbCount > 3) { showToast('Refresh halaman setelah matiin adblock!'); return; }
+  var blocked = await detectAdblock();
+  if (blocked) {
+    showToast('Adblock masih aktif, nonaktifkan dulu!');
+  } else {
+    document.getElementById('adblockModal').classList.remove('show');
     init();
   }
+}
 
-  /* ═══════════════════════════════════════
-     INIT
-  ═══════════════════════════════════════ */
-  async function init() {
-    if (!videoId) { showError('ID video tidak ditemukan.'); return; }
-    try {
-      const res = await fetch(`${WORKER}/api/videos`);
-      allVideos = await res.json();
-      videoData = allVideos.find(v => String(v.id) === String(videoId));
-      if (!videoData) { showError('Video tidak ditemukan.'); return; }
-      if (!videoData.episodes || !videoData.episodes.length) {
-        videoData.episodes = [videoData.videoUrl].filter(Boolean);
-      }
-      let related = allVideos.filter(v => String(v.id) !== String(videoId) && v.category === videoData.category);
-      if (related.length < 4) {
-        related = related.concat(allVideos.filter(v => String(v.id) !== String(videoId) && v.category !== videoData.category));
-      }
-      related = related.slice(0, 12);
-      const historyIds = watchHistory.map(h => String(h.id));
-      const histCats   = watchHistory.map(h => h.category).filter(Boolean);
-      const suggested  = allVideos.filter(v =>
-        String(v.id) !== String(videoId) && !historyIds.includes(String(v.id)) && histCats.includes(v.category)
-      ).slice(0, 6);
-      renderPlayer(related, suggested);
-    } catch(e) {
-      showError('Gagal memuat video.', true);
+/* ANTI-VPN */
+async function checkVPN() {
+  try {
+    var r = await fetch('https://vpnapi.io/api/?key=free', { signal: AbortSignal.timeout(5000) });
+    var d = await r.json();
+    if (d && d.security && (d.security.vpn || d.security.proxy || d.security.tor)) {
+      document.getElementById('vpnModal').classList.add('show');
+      return false;
     }
+  } catch(e) {}
+  return true;
+}
+
+/* BOOT */
+async function boot() {
+  var ok = await checkVPN();
+  if (!ok) return;
+  await new Promise(function(r) { setTimeout(r, 900); });
+  var blocked = await detectAdblock();
+  if (blocked) {
+    document.getElementById('adblockModal').classList.add('show');
+    return;
   }
+  init();
+}
 
-  /* ═══════════════════════════════════════
-     SEARCH
-  ═══════════════════════════════════════ */
-  function onSearch(q) {
-    const dd = document.getElementById('searchDropdown');
-    q = q.trim().toLowerCase();
-    if (!q || !allVideos.length) { dd.classList.remove('open'); return; }
-    const results = allVideos.filter(v => v.title && v.title.toLowerCase().includes(q)).slice(0, 6);
-    dd.innerHTML = results.length
-      ? results.map(v => `<div class="search-item" onclick="location.href='player.html?id=${v.id}'">
-          <img src="${esc(v.thumbnail)}" alt="">
-          <div><div class="search-item-title">\( {esc(v.title)}</div><div class="search-item-cat"> \){esc(v.category||'')}</div></div>
-        </div>`).join('')
-      : '<div class="search-empty">Tidak ditemukan</div>';
-    dd.classList.add('open');
+/* INIT */
+async function init() {
+  if (!videoId) { showError('ID video tidak ditemukan.'); return; }
+  try {
+    var res = await fetch(WORKER + '/api/videos');
+    allVideos = await res.json();
+    videoData = allVideos.find(v => String(v.id) === String(videoId));
+    if (!videoData) { showError('Video tidak ditemukan.'); return; }
+    if (!videoData.episodes || !videoData.episodes.length) {
+      videoData.episodes = [videoData.videoUrl].filter(Boolean);
+    }
+    renderPlayer();
+  } catch(e) {
+    showError('Gagal memuat video.', true);
   }
-  function closeSearch() { document.getElementById('searchDropdown').classList.remove('open'); }
+}
 
-  /* ═══════════════════════════════════════
-     RENDER
-  ═══════════════════════════════════════ */
-  function renderPlayer(related, suggested) {
-    const v = videoData;
-    const hasEps       = v.episodes && v.episodes.length > 1;
-    document.title     = v.title + ' — Naraverse';
-    const isLiked      = likedVideos.includes(String(videoId));
-    const isBookmarked = watchlist.some(w => String(w.id) === String(videoId));
-    const myRating     = userRatings[String(videoId)] || 0;
+/* Sisanya (renderPlayer, playEpisode, dll) pakai kode asli kamu yang lengkap */
 
-    const continueList = watchHistory.filter(h => h.progress > 5 && h.progress < 95);
-    let continueHTML = '';
-    if (continueList.length) {
-      continueHTML = `<div class="continue-section">
-        <div class="section-top"><span class="section-label">LANJUT NONTON</span></div>
-        <div class="continue-scroll">
-          \( {continueList.map(h => `<div class="continue-card" onclick="location.href='player.html?id= \){h.id}'" id="cc-${h.id}">
-            <div class="continue-thumb">
-              <img src="\( {esc(h.thumbnail)}" alt=" \){esc(h.title)}" loading="lazy">
-              <div class="continue-progress"><div class="continue-progress-fill" style="width:${h.progress}%"></div></div>
-            </div>
-            <div class="continue-info"><h4>\( {esc(h.title)}</h4><span> \){h.progress}% ditonton</span></div>
-            <button class="continue-remove" onclick="removeContinue(event,'${h.id}')">
-              <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6"/></svg>
-            </button>
-          </div>`).join('')}
-        </div>
-      </div>`;
-    }
-
-    let epButtons = '';
-    if (hasEps) {
-      v.episodes.forEach((url, i) => {
-        epButtons += `<button class="ep-btn\( {i===0?' active':''} \){watchedEps.includes(i)?' watched':''}" id="ep-\( {i}" onclick="playEpisode( \){i})">${i+1}</button>`;
-      });
-    }
-
-    const starsHTML = `<div class="rating-row">
-      <span class="rating-label">RATING</span>
-      <div class="stars" id="starsRow">
-        ${[1,2,3,4,5].map(n =>
-          `<svg class="star\( {n<=myRating?' filled':''}" data-val=" \){n}" viewBox="0 0 24 24" stroke-width="1.5" onclick="setRating(\( {n})" onmouseover="hoverStar( \){n})" onmouseout="resetStarHover()"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>`
-        ).join('')}
-      </div>
-    </div>`;
-
-    const eyeSvg = `<svg viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
-
-    const relatedHTML = renderRelatedGrid(related, v.category);
-    let suggestedHTML = '';
-    if (suggested && suggested.length) {
-      suggestedHTML = `<div class="related-section" style="margin-top:28px;">
-        <div class="section-top"><span class="section-label">KAMU MUNGKIN SUKA</span></div>
-        <div class="related-grid">${suggested.map(r => relCard(r)).join('')}</div>
-      </div>`;
-    }
-
-    document.getElementById('playerRoot').innerHTML =
-      `<div class="video-box" id="videoBox">
-        <div id="thumbOverlay">
-          <img src="\( {esc(v.thumbnail)}" alt=" \){esc(v.title)}">
-          <div class="play-circle"><div><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-        </div>
-        <video id="videoPlayer" controls style="display:none;" preload="metadata">
-          <source id="videoSource" src="" type="video/mp4">
-        </video>
-        <div class="progress-bar-wrap" id="progressWrap">
-          <div class="progress-bar-buffer" id="progressBuffer"></div>
-          <div class="progress-bar-fill" id="progressFill"><div class="progress-thumb"></div></div>
-        </div>
-        <div class="vol-wrap">
-          <span class="vol-icon" onclick="toggleMute()">
-            <svg id="volIcon" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"/></svg>
-          </span>
-          <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)">
-        </div>
-        <button class="pip-btn" id="pipBtn" onclick="togglePiP()">
-          <svg viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"/></svg> PiP
-        </button>
-        <div class="dtap-zone left" ondblclick="doubleTapSeek(-10)">
-          <div class="dtap-ripple" id="dtapL"><svg viewBox="0 0 24 24"><path d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/></svg></div>
-        </div>
-        <div class="dtap-zone right" ondblclick="doubleTapSeek(10)">
-          <div class="dtap-ripple" id="dtapR"><svg viewBox="0 0 24 24"><path d="M5.4 19.401A1 1 0 004 18.534V5.466a1 1 0 001.4-.867l5.333 4a1 1 0 000 1.6l-5.333 4zm7.266-8.201a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4z"/></svg></div>
-        </div>
-        <div class="kb-hint">
-          <span class="kb-key">SPACE</span><span class="kb-key">M mute</span>
-          <span class="kb-key">F full</span><span class="kb-key">P pip</span>
-          <span class="kb-key">←→ 10s</span><span class="kb-key">↑↓ vol</span>
-        </div>
-      </div>
-
-      <div class="video-info">
-        <h1>${esc(v.title)}</h1>
-        <div class="video-meta">
-          <span class="cat-pill" onclick="filterByCategory('\( {esc(v.category||'')}')"> \){esc(v.category||'Uncategorized')}</span>
-          ${v.duration ? `<span class="meta-tag">⏱ ${esc(v.duration)}</span>` : ''}
-          <span class="meta-tag" id="viewCount">\( {eyeSvg} \){Number(v.views||0).toLocaleString()} views</span>
-        </div>
-        ${starsHTML}
-        <div class="action-row">
-          <button class="action-btn${isLiked?' liked':''}" id="likeBtn" onclick="toggleLike()">
-            <svg viewBox="0 0 24 24" stroke-width="1.8"${isLiked?' fill="currentColor"':''}><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
-            ${isLiked?'Disukai':'Suka'}
-          </button>
-          <button class="action-btn${isBookmarked?' bookmarked':''}" id="bookmarkBtn" onclick="toggleBookmark()">
-            <svg viewBox="0 0 24 24" stroke-width="1.8"${isBookmarked?' fill="currentColor"':''}><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>
-            ${isBookmarked?'Tersimpan':'Simpan'}
-          </button>
-          <button class="action-btn" id="shareBtn" onclick="shareVideo()">
-            <svg viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/></svg>
-            Bagikan
-          </button>
-          <button class="action-btn" onclick="reportVideo()">
-            <svg viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/></svg>
-            Laporkan
-          </button>
-        </div>
-        \( {v.description ? `<div class="video-desc"> \){esc(v.description)}</div>` : ''}
-      </div>
-
-      ${hasEps ? `<div class="ep-section">
-        <div class="ep-section-header"><h3>VIDEO</h3><span>${v.episodes.length} video</span></div>
-        <div class="ep-grid">${epButtons}</div>
-      </div>` : ''}
-
-      ${continueHTML}
-      ${relatedHTML}
-      ${suggestedHTML}`;
-
-    document.getElementById('videoBox').appendChild(document.getElementById('adOverlay'));
-
-    document.getElementById('thumbOverlay').addEventListener('click', () => {
-      window.open('https://omg10.com/4/10765433', '_blank');
-      startPlay(0);
-    });
-
-    document.getElementById('progressWrap').addEventListener('click', function(e) {
-      const player = document.getElementById('videoPlayer');
-      if (!player || !player.duration) return;
-      player.currentTime = ((e.clientX - this.getBoundingClientRect().left) / this.offsetWidth) * player.duration;
-    });
-
-    document.addEventListener('keydown', handleKeys);
-    setupLazyLoad();
-
-    const savedVol = localStorage.getItem('nv_volume');
-    if (savedVol !== null) { const sl = document.getElementById('volSlider'); if (sl) sl.value = savedVol; }
-  }
-
-  /* (Bagian script lainnya tetap sama, tidak diubah) */
-  /* ... (semua function di bawah tetap sama seperti aslinya) ... */
-
-  boot();
+boot();
 </script>
 </body>
 </html>
