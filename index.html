@@ -578,10 +578,10 @@ async function doLogin() {
   var btn = document.getElementById('loginBtn');
   btn.disabled=true; btn.textContent='Memproses...';
   try {
-    var res = await fetch(WORKER+'/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:id,password:pw})});
+    var res = await fetch(WORKER+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:id,password:pw})});
     var d = await res.json();
     if (!res.ok) { document.getElementById('loginError').textContent=d.error||'Login gagal.'; genCaptcha('login'); }
-    else { closeAuthModal(); await checkAuth(); showToast('Selamat datang kembali!'); }
+    else { localStorage.setItem('nv_token', d.token); closeAuthModal(); await checkAuth(); showToast('Selamat datang kembali!'); }
   } catch(e) { document.getElementById('loginError').textContent='Koneksi gagal.'; }
   btn.disabled=false; btn.textContent='Masuk';
 }
@@ -597,16 +597,17 @@ async function doRegister() {
   var btn = document.getElementById('registerBtn');
   btn.disabled=true; btn.textContent='Memproses...';
   try {
-    var res = await fetch(WORKER+'/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username:uname,password:pw})});
+    var res = await fetch(WORKER+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username:uname,password:pw})});
     var d = await res.json();
     if (!res.ok) { document.getElementById('registerError').textContent=d.error||'Pendaftaran gagal.'; genCaptcha('register'); }
-    else { closeAuthModal(); await checkAuth(); showToast('Akun berhasil dibuat!'); }
+    else { localStorage.setItem('nv_token', d.token); closeAuthModal(); await checkAuth(); showToast('Akun berhasil dibuat!'); }
   } catch(e) { document.getElementById('registerError').textContent='Koneksi gagal.'; }
   btn.disabled=false; btn.textContent='Buat Akun';
 }
 
 async function doLogout() {
-  try { await fetch(WORKER+'/api/auth/logout',{method:'POST',credentials:'include'}); } catch(e){}
+  try { await fetch(WORKER+'/api/auth/logout',{method:'POST',headers:authHeaders()}); } catch(e){}
+  localStorage.removeItem('nv_token');
   currentUser=null; showLoggedOut();
   document.getElementById('userDropdown').classList.remove('open');
   showToast('Berhasil keluar.');
@@ -614,7 +615,7 @@ async function doLogout() {
 
 async function checkAuth() {
   try {
-    var res = await fetch(WORKER+'/api/auth/me',{credentials:'include'});
+    var res = await fetch(WORKER+'/api/auth/me',{headers:authHeaders()});
     if (!res.ok) { showLoggedOut(); return; }
     currentUser = await res.json();
     showLoggedIn(currentUser);
@@ -659,11 +660,16 @@ async function saveProfile() {
   var dn = document.getElementById('profileName').value.trim();
   var av = document.getElementById('profileAvatar').value.trim();
   try {
-    var res = await fetch(WORKER+'/api/auth/profile',{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:dn,avatar_url:av})});
+    var res = await fetch(WORKER+'/api/auth/profile',{method:'PATCH',headers:authHeaders(),body:JSON.stringify({display_name:dn,avatar_url:av})});
     if (res.ok) { closeModal(); await checkAuth(); showToast('Profil diperbarui!'); }
     else showToast('Gagal menyimpan.');
   } catch(e) { showToast('Koneksi gagal.'); }
 }
+
+
+/* ── AUTH HELPER ── */
+function getToken(){return localStorage.getItem('nv_token')||'';}
+function authHeaders(extra){return Object.assign({'Content-Type':'application/json','Authorization':'Bearer '+getToken()},extra||{});}
 
 /* ── ANTI-VPN ── */
 async function checkVPN() {
