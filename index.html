@@ -227,17 +227,7 @@ header{position:sticky;top:0;z-index:500;background:rgba(6,6,8,0.92);backdrop-fi
 .auth-field input:focus{border-color:var(--red-dim);box-shadow:0 0 0 3px var(--red-glow);}
 .auth-field input::placeholder{color:var(--muted);}
 
-/* CAPTCHA */
-.captcha-wrap{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:14px;}
-.captcha-label{display:block;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:1px;margin-bottom:10px;}
-.captcha-row{display:flex;align-items:center;gap:8px;}
-.captcha-question{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;color:var(--text);flex-shrink:0;background:rgba(230,0,0,0.08);border:1px solid var(--border-red);border-radius:6px;padding:6px 12px;letter-spacing:2px;}
-.captcha-eq{color:var(--muted);font-size:17px;flex-shrink:0;}
-.captcha-input{flex:1;height:38px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:16px;padding:0 10px;outline:none;transition:.2s;text-align:center;}
-.captcha-input:focus{border-color:var(--red-dim);box-shadow:0 0 0 3px var(--red-glow);}
-.captcha-refresh{width:34px;height:34px;background:transparent;border:1px solid var(--border);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
-.captcha-refresh:hover{border-color:var(--red-dim);background:rgba(230,0,0,0.07);}
-.captcha-refresh svg{width:14px;height:14px;stroke:var(--muted);fill:none;}
+
 
 .auth-btn{width:100%;height:44px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-top:4px;}
 .auth-btn:hover{background:var(--accent);}
@@ -453,15 +443,6 @@ footer{border-top:1px solid var(--border-red);padding:36px 4% 28px;}
           <label>PASSWORD</label>
           <input type="password" id="loginPassword" placeholder="Password kamu" autocomplete="current-password">
         </div>
-        <div class="captcha-wrap">
-          <span class="captcha-label">VERIFIKASI KEAMANAN</span>
-          <div class="captcha-row">
-            <div class="captcha-question" id="loginCaptchaQ">? + ?</div>
-            <span class="captcha-eq">=</span>
-            <input type="number" class="captcha-input" id="loginCaptchaA" placeholder="?" autocomplete="off">
-            <button class="captcha-refresh" onclick="genCaptcha('login')" title="Ganti soal"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg></button>
-          </div>
-        </div>
         <button class="auth-btn" id="loginBtn" onclick="doLogin()">Masuk</button>
         <div class="auth-error" id="loginError"></div>
       </div>
@@ -479,15 +460,6 @@ footer{border-top:1px solid var(--border-red);padding:36px 4% 28px;}
         <div class="auth-field">
           <label>PASSWORD</label>
           <input type="password" id="regPassword" placeholder="Minimal 8 karakter" autocomplete="new-password">
-        </div>
-        <div class="captcha-wrap">
-          <span class="captcha-label">VERIFIKASI KEAMANAN</span>
-          <div class="captcha-row">
-            <div class="captcha-question" id="regCaptchaQ">? + ?</div>
-            <span class="captcha-eq">=</span>
-            <input type="number" class="captcha-input" id="regCaptchaA" placeholder="?" autocomplete="off">
-            <button class="captcha-refresh" onclick="genCaptcha('register')" title="Ganti soal"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg></button>
-          </div>
         </div>
         <button class="auth-btn" id="registerBtn" onclick="doRegister()">Buat Akun</button>
         <div class="auth-error" id="registerError"></div>
@@ -528,28 +500,13 @@ var watchHistory = JSON.parse(localStorage.getItem('watchHistory') || '[]');
 var currentUser  = null;
 var eyeSVG = '<svg viewBox="0 0 24 24" stroke-width="1.5" style="width:11px;height:11px;stroke:var(--muted);fill:none;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
 
-/* ── CAPTCHA ── */
-var captchaAns = { login: 0, register: 0 };
-function genCaptcha(type) {
-  var ops = ['+', '-', 'x'];
-  var op = ops[Math.floor(Math.random() * 3)];
-  var a, b, ans, label;
-  if (op === '+') { a = Math.floor(Math.random()*20)+1; b = Math.floor(Math.random()*20)+1; ans = a+b; label = a+' + '+b; }
-  else if (op === '-') { a = Math.floor(Math.random()*20)+10; b = Math.floor(Math.random()*a)+1; ans = a-b; label = a+' - '+b; }
-  else { a = Math.floor(Math.random()*9)+2; b = Math.floor(Math.random()*9)+2; ans = a*b; label = a+' × '+b; }
-  captchaAns[type] = ans;
-  document.getElementById(type==='login'?'loginCaptchaQ':'regCaptchaQ').textContent = label;
-  document.getElementById(type==='login'?'loginCaptchaA':'regCaptchaA').value = '';
-}
-function checkCaptcha(type) {
-  return parseInt(document.getElementById(type==='login'?'loginCaptchaA':'regCaptchaA').value,10) === captchaAns[type];
-}
+
 
 /* ── AUTH MODAL ── */
 function openAuthModal(tab) {
   document.getElementById('authModal').classList.add('show');
   switchAuthTab(tab||'login');
-  genCaptcha('login'); genCaptcha('register');
+
 }
 function closeAuthModal() {
   document.getElementById('authModal').classList.remove('show');
@@ -571,7 +528,6 @@ function switchAuthTab(tab) {
 
 /* ── AUTH ACTIONS ── */
 async function doLogin() {
-  if (!checkCaptcha('login')) { document.getElementById('loginError').textContent='Jawaban captcha salah.'; genCaptcha('login'); return; }
   var id = document.getElementById('loginIdentifier').value.trim();
   var pw = document.getElementById('loginPassword').value;
   if (!id||!pw) { document.getElementById('loginError').textContent='Semua field wajib diisi.'; return; }
@@ -587,7 +543,6 @@ async function doLogin() {
 }
 
 async function doRegister() {
-  if (!checkCaptcha('register')) { document.getElementById('registerError').textContent='Jawaban captcha salah.'; genCaptcha('register'); return; }
   var email = document.getElementById('regEmail').value.trim();
   var uname = document.getElementById('regUsername').value.trim();
   var pw    = document.getElementById('regPassword').value;
