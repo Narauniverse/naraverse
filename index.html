@@ -265,7 +265,7 @@ footer{border-top:1px solid var(--border-red);padding:36px 4% 28px;}
 /* BOTTOM NAV */
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:rgba(6,6,8,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border-red);z-index:600;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);}
 .bottom-nav-inner{display:flex;align-items:stretch;height:100%;}
-.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:none;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;transition:.2s;padding:0;position:relative;-webkit-tap-highlight-color:transparent;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:none;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;transition:.2s;padding:0;position:relative;-webkit-tap-highlight-color:transparent;text-decoration:none;}
 .bn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;flex-shrink:0;transition:.2s;}
 .bn-item span{line-height:1;}
 .bn-item.active{color:var(--accent);}
@@ -801,31 +801,31 @@ boot();
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
-    <button class="bn-item active" id="bnBeranda" onclick="bnClick('beranda')">
+    <a class="bn-item active" href="/">
       <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       <span>Beranda</span>
-    </button>
-    <button class="bn-item" id="bnCari" onclick="bnClick('cari')">
+    </a>
+    <a class="bn-item" href="/cari.html">
       <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       <span>Cari</span>
-    </button>
-    <button class="bn-item" id="bnWatchlist" onclick="bnClick('watchlist')">
+    </a>
+    <a class="bn-item" href="/watchlist.html">
       <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>
       <span>Watchlist</span>
-    </button>
-    <button class="bn-item" id="bnFavorit" onclick="bnClick('favorit')">
+    </a>
+    <a class="bn-item" href="/favorit.html">
       <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
       <span>Favorit</span>
-    </button>
-    <button class="bn-item" id="bnProfil" onclick="bnClick('profil')">
+    </a>
+    <a class="bn-item" href="/profil.html">
       <svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
       <span>Profil</span>
-    </button>
+    </a>
   </div>
 </nav>
 
-<!-- SEARCH OVERLAY MOBILE -->
-<div class="search-overlay" id="searchOverlay">
+<!-- SEARCH OVERLAY MOBILE (tidak dipakai, pindah ke cari.html) -->
+<div class="search-overlay" id="searchOverlay" style="display:none!important">
   <div class="search-overlay-inner">
     <div class="so-header">
       <input class="so-input" id="soInput" type="text" placeholder="Cari video, kategori..." autocomplete="off">
@@ -839,4 +839,3 @@ boot();
 
 </body>
 </html>
-
