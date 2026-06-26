@@ -536,7 +536,7 @@ async function doLogin() {
   try {
     var res = await fetch(WORKER+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:id,password:pw})});
     var d = await res.json();
-    if (!res.ok) { document.getElementById('loginError').textContent=d.error||'Login gagal.'; genCaptcha('login'); }
+    if (!res.ok) { document.getElementById('loginError').textContent=d.error||'Login gagal.'; }
     else { localStorage.setItem('nv_token', d.token); closeAuthModal(); await checkAuth(); showToast('Selamat datang kembali!'); }
   } catch(e) { document.getElementById('loginError').textContent='Koneksi gagal.'; }
   btn.disabled=false; btn.textContent='Masuk';
@@ -554,7 +554,7 @@ async function doRegister() {
   try {
     var res = await fetch(WORKER+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username:uname,password:pw})});
     var d = await res.json();
-    if (!res.ok) { document.getElementById('registerError').textContent=d.error||'Pendaftaran gagal.'; genCaptcha('register'); }
+    if (!res.ok) { document.getElementById('registerError').textContent=d.error||'Pendaftaran gagal.'; }
     else { localStorage.setItem('nv_token', d.token); closeAuthModal(); await checkAuth(); showToast('Akun berhasil dibuat!'); }
   } catch(e) { document.getElementById('registerError').textContent='Koneksi gagal.'; }
   btn.disabled=false; btn.textContent='Buat Akun';
@@ -774,7 +774,7 @@ document.getElementById('soInput')&&document.getElementById('soInput').addEventL
   if(!q){document.getElementById('soResults').innerHTML='<div style="padding:24px 16px;color:var(--muted);font-size:13px;text-align:center;">Ketik untuk mencari...</div>';return;}
   soT=setTimeout(function(){
     var hits=allVideos.filter(function(v){return(v.title||'').toLowerCase().includes(q)||(v.category||'').toLowerCase().includes(q);}).slice(0,15);
-    document.getElementById('soResults').innerHTML=hits.length?hits.map(function(v){return'<div class="sri" onclick="window.open("player.html?id='+v.id+'","_blank")"><img src="'+esc(v.thumbnail)+'" alt="" loading="lazy"><div><div class="sri-title">'+esc(v.title)+'</div><div class="sri-cat">'+esc(v.category||'')+'</div></div></div>';}).join(''):'<div class="sri-empty">Tidak ditemukan hasil.</div>';
+    document.getElementById('soResults').innerHTML=hits.length?hits.map(function(v){return'<div class="sri" onclick="window.open(\'player.html?id='+v.id+'\',\'_blank\')"><img src="'+esc(v.thumbnail)+'" alt="" loading="lazy"><div><div class="sri-title">'+esc(v.title)+'</div><div class="sri-cat">'+esc(v.category||'')+'</div></div></div>';}).join(''):'<div class="sri-empty">Tidak ditemukan hasil.</div>';
   },180);
 });
 
