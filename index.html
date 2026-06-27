@@ -185,6 +185,20 @@ header{position:sticky;top:0;z-index:500;background:rgba(6,6,8,0.92);backdrop-fi
 #btt{position:fixed;bottom:26px;right:26px;width:42px;height:42px;background:var(--red);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;z-index:400;}
 #btt.show{opacity:1;transform:translateY(0);}
 #btt svg{width:20px;height:20px;stroke:#fff;fill:none;}
+/* NOTIF BANNER */
+.notif-banner{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0e0e12;border:1px solid var(--border-red);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;z-index:800;box-shadow:0 8px 32px rgba(0,0,0,0.6);max-width:340px;width:calc(100% - 32px);animation:slideUp .4s cubic-bezier(.22,1,.36,1);}
+.notif-banner.hidden{display:none;}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.notif-icon{width:36px;height:36px;background:rgba(230,0,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.notif-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;}
+.notif-text{flex:1;min-width:0;}
+.notif-text p{font-size:12px;color:var(--text);line-height:1.4;}
+.notif-text span{font-size:11px;color:var(--muted);}
+.notif-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.notif-yes{height:30px;padding:0 12px;background:var(--red);border:none;border-radius:6px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.notif-no{height:30px;padding:0 12px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;}
+@media(min-width:769px){.notif-banner{bottom:28px;}}
+
 
 /* DRAWER */
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:800;opacity:0;pointer-events:none;transition:opacity .3s;}
@@ -795,7 +809,67 @@ document.addEventListener('keydown',function(e){
 /* ── 3D BACKGROUND ── */
 (function(){var cv=document.getElementById('bgCanvas');var ctx=cv.getContext('2d');var W,H,cx,cy,time=0;var particles=[];var mouse={x:0,y:0};function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;cx=W/2;cy=H/2;}window.addEventListener('resize',resize);resize();window.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY;});for(var i=0;i<70;i++)particles.push({x:Math.random(),y:Math.random(),z:Math.random()*900+100,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.6+.4,pulse:Math.random()*Math.PI*2});var orbs=[{x:.2,y:.3,r:260,s:.00025,ph:0,c:'200,0,0'},{x:.8,y:.7,r:220,s:.0003,ph:2,c:'120,0,0'},{x:.5,y:.15,r:180,s:.00035,ph:4,c:'160,0,0'},{x:.3,y:.8,r:200,s:.0002,ph:1,c:'80,0,0'}];function p3d(x,y,z,panR,tiltR){var cP=Math.cos(panR),sP=Math.sin(panR);var rx=x*cP-z*sP,rz=x*sP+z*cP;var cT=Math.cos(tiltR),sT=Math.sin(tiltR);var ry=y*cT-rz*sT,rz2=y*sT+rz*cT;var fov=600,d=fov+rz2;if(d<=0)return{x:cx,y:cy};var sc=fov/d;return{x:cx+rx*sc,y:cy+ry*sc};}function drawGrid(){var pan=(mouse.x/W-.5)*.28,tilt=(mouse.y/H-.5)*.22;var R=16,C=16,sp=85,zD=700;for(var r=0;r<=R;r++){var py=(-(R/2)*sp)+r*sp;var a=0.025+0.035*Math.abs(Math.sin(time*.35+r*.28));var p1=p3d(-(C/2)*sp,py,0,pan,tilt),p3b=p3d(-(C/2)*sp,py,zD,pan,tilt),p2=p3d((C/2)*sp,py,0,pan,tilt),p4=p3d((C/2)*sp,py,zD,pan,tilt);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p3b.x,p3b.y);ctx.strokeStyle='rgba(200,0,0,'+a+')';ctx.lineWidth=.55;ctx.stroke();ctx.beginPath();ctx.moveTo(p2.x,p2.y);ctx.lineTo(p4.x,p4.y);ctx.strokeStyle='rgba(200,0,0,'+a+')';ctx.stroke();}for(var c=0;c<=C;c++){var px=(-(C/2)*sp)+c*sp;var a2=0.025+0.035*Math.abs(Math.sin(time*.35+c*.28));var q1=p3d(px,-(R/2)*sp,0,pan,tilt),q3=p3d(px,-(R/2)*sp,zD,pan,tilt),q2=p3d(px,(R/2)*sp,0,pan,tilt),q4=p3d(px,(R/2)*sp,zD,pan,tilt);ctx.beginPath();ctx.moveTo(q1.x,q1.y);ctx.lineTo(q3.x,q3.y);ctx.strokeStyle='rgba(200,0,0,'+a2+')';ctx.lineWidth=.55;ctx.stroke();ctx.beginPath();ctx.moveTo(q2.x,q2.y);ctx.lineTo(q4.x,q4.y);ctx.strokeStyle='rgba(200,0,0,'+a2+')';ctx.stroke();}}function drawOrbs(){orbs.forEach(function(o){var ox=(o.x+Math.sin(time*o.s+o.ph)*.09)*W,oy=(o.y+Math.cos(time*o.s*.7+o.ph)*.07)*H;var g=ctx.createRadialGradient(ox,oy,0,ox,oy,o.r);g.addColorStop(0,'rgba('+o.c+',0.07)');g.addColorStop(1,'rgba('+o.c+',0)');ctx.beginPath();ctx.arc(ox,oy,o.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();});}function drawParticles(){var fov=500;particles.forEach(function(p){p.pulse+=.018;p.x+=p.vx/W;p.y+=p.vy/H;if(p.x<0)p.x=1;if(p.x>1)p.x=0;if(p.y<0)p.y=1;if(p.y>1)p.y=0;var sc=fov/(fov+p.z);var px=cx+(p.x*W-cx)*sc,py=cy+(p.y*H-cy)*sc;var alpha=sc*(.4+.3*Math.sin(p.pulse));ctx.beginPath();ctx.arc(px,py,Math.max(.3,p.r*sc),0,Math.PI*2);ctx.fillStyle='rgba(255,60,60,'+Math.min(alpha,.65)+')';ctx.fill();});}function loop(){time++;ctx.fillStyle='#060608';ctx.fillRect(0,0,W,H);drawOrbs();drawGrid();drawParticles();requestAnimationFrame(loop);}loop();})();
 
+
+/* ── PUSH NOTIFICATION ── */
+var VAPID_PUBLIC_KEY='BPOzcXmXxNRHZmWKbr9-xQ36y-Ycfwr3aabmt0DJ32v3lyO5W1Ar7ZnZX2B1-3OLSz8qc6j_Wy8CTYtlVZXkdy4';
+
+function urlBase64ToUint8Array(base64String){
+  var padding='='.repeat((4-base64String.length%4)%4);
+  var base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  var rawData=atob(base64);
+  var outputArray=new Uint8Array(rawData.length);
+  for(var i=0;i<rawData.length;i++)outputArray[i]=rawData.charCodeAt(i);
+  return outputArray;
+}
+
+async function initNotif(){
+  if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
+  if(localStorage.getItem('notif_dismissed'))return;
+  var perm=Notification.permission;
+  if(perm==='granted'){await registerPush();return;}
+  if(perm==='denied')return;
+  // Tampilkan banner setelah 3 detik
+  setTimeout(function(){document.getElementById('notifBanner').classList.remove('hidden');},3000);
+}
+
+async function enableNotif(){
+  document.getElementById('notifBanner').classList.add('hidden');
+  var perm=await Notification.requestPermission();
+  if(perm==='granted'){await registerPush();showToast('Notifikasi diaktifkan!');}
+  else{showToast('Notifikasi diblokir oleh browser.');}
+}
+
+function dismissNotif(){
+  document.getElementById('notifBanner').classList.add('hidden');
+  localStorage.setItem('notif_dismissed','1');
+}
+
+async function registerPush(){
+  try{
+    var reg=await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+    var existing=await reg.pushManager.getSubscription();
+    if(existing){await saveSubscription(existing);return;}
+    var sub=await reg.pushManager.subscribe({
+      userVisibleOnly:true,
+      applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+    await saveSubscription(sub);
+  }catch(e){console.log('Push error:',e);}
+}
+
+async function saveSubscription(sub){
+  try{
+    await fetch(WORKER+'/api/push/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({subscription:sub.toJSON()})
+    });
+  }catch(e){}
+}
+
 boot();
+initNotif();
 </script>
 
 <!-- BOTTOM NAV -->
@@ -834,6 +908,20 @@ boot();
     <div class="so-results" id="soResults">
       <div style="padding:24px 16px;color:var(--muted);font-size:13px;text-align:center;">Ketik untuk mencari...</div>
     </div>
+  </div>
+</div>
+
+
+<!-- NOTIF BANNER -->
+<div class="notif-banner hidden" id="notifBanner">
+  <div class="notif-icon"><svg viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg></div>
+  <div class="notif-text">
+    <p>Aktifkan notifikasi</p>
+    <span>Jangan ketinggalan konten baru!</span>
+  </div>
+  <div class="notif-actions">
+    <button class="notif-yes" onclick="enableNotif()">Aktifkan</button>
+    <button class="notif-no" onclick="dismissNotif()">Nanti</button>
   </div>
 </div>
 
