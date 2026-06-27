@@ -62,7 +62,11 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
     </div>
     <div class="field">
       <label>URL TUJUAN (opsional)</label>
-      <input type="url" id="url" placeholder="https://narauniverse.pages.dev/" >
+      <input type="url" id="url" placeholder="https://narauniverse.pages.dev/">
+    </div>
+    <div class="field">
+      <label>URL GAMBAR (opsional)</label>
+      <input type="url" id="image" placeholder="https://...jpg">
     </div>
 
     <div class="preview">
@@ -82,47 +86,58 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 </div>
 
 <script>
-var WORKER='https://naraverse.slibawblewer.workers.dev';
+var WORKER = 'https://naraverse.slibawblewer.workers.dev';
 
-function updatePreview(){
-  var t=document.getElementById('title').value;
-  var m=document.getElementById('message').value;
-  document.getElementById('prevTitle').textContent=t||'🎬 Naraverse — Konten Baru!';
-  document.getElementById('prevBody').textContent=m||'Ada konten baru yang menanti kamu!';
+function updatePreview() {
+  var t = document.getElementById('title').value;
+  var m = document.getElementById('message').value;
+  document.getElementById('prevTitle').textContent = t || '🎬 Naraverse — Konten Baru!';
+  document.getElementById('prevBody').textContent = m || 'Ada konten baru yang menanti kamu!';
 }
 
-async function sendNotif(){
-  var secret=document.getElementById('secret').value.trim();
-  var title=document.getElementById('title').value.trim();
-  var message=document.getElementById('message').value.trim();
-  var url=document.getElementById('url').value.trim();
-  if(!secret){showResult('Secret wajib diisi!','fail');return;}
-  if(!message){showResult('Pesan wajib diisi!','fail');return;}
+async function sendNotif() {
+  var secret  = document.getElementById('secret').value.trim();
+  var title   = document.getElementById('title').value.trim();
+  var message = document.getElementById('message').value.trim();
+  var url     = document.getElementById('url').value.trim();
+  var image   = document.getElementById('image').value.trim();
 
-  var btn=document.getElementById('sendBtn');
-  btn.disabled=true;btn.textContent='Mengirim...';
+  if (!secret)  { showResult('Secret wajib diisi!', 'fail'); return; }
+  if (!message) { showResult('Pesan wajib diisi!', 'fail'); return; }
 
-  try{
-    var res=await fetch(WORKER+'/api/push/send',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({secret,title,message,url:url||'/'})
+  var btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Mengirim...';
+
+  try {
+    var res = await fetch(WORKER + '/api/push/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret, title, message, url: url || '/', image: image || '' }),
     });
-    var d=await res.json();
-    if(res.ok){
-      showResult('✓ Berhasil dikirim ke '+d.sent+' subscriber'+(d.failed?' ('+d.failed+' gagal)':'')+'!','ok');
+    var d = await res.json();
+    if (res.ok) {
+      showResult(
+        '✓ Berhasil dikirim ke ' + d.sent + ' subscriber' +
+        (d.failed ? ' (' + d.failed + ' gagal)' : '') + '!',
+        'ok'
+      );
     } else {
-      showResult('✗ '+( d.error||'Gagal mengirim'),'fail');
+      showResult('✗ ' + (d.error || 'Gagal mengirim'), 'fail');
     }
-  }catch(e){showResult('✗ Koneksi gagal','fail');}
-  btn.disabled=false;btn.textContent='Kirim ke Semua Subscriber';
+  } catch (e) {
+    showResult('✗ Koneksi gagal: ' + e.message, 'fail');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Kirim ke Semua Subscriber';
 }
 
-function showResult(msg,type){
-  var el=document.getElementById('result');
-  el.textContent=msg;
-  el.className='result '+type;
-  el.style.display='block';
+function showResult(msg, type) {
+  var el = document.getElementById('result');
+  el.textContent = msg;
+  el.className = 'result ' + type;
+  el.style.display = 'block';
 }
 </script>
 </body>
