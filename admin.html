@@ -56,7 +56,6 @@
     /* PAGES */
     .page{display:none;}
     .page.active{display:block;}
-
     .page-header{margin-bottom:28px;}
     .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;margin-bottom:6px;}
     .page-header p{color:var(--muted);font-size:14px;}
@@ -69,10 +68,12 @@
     .stat-card .sub{font-size:12px;color:var(--green);margin-top:4px;}
     .stat-card.highlight{border-color:var(--border-red);background:rgba(230,0,0,0.04);}
     .stat-card.highlight .value{color:var(--accent);}
+    .stat-card.blue .value{color:#60a5fa;}
+    .stat-card.blue{border-color:rgba(96,165,250,0.2);}
 
     /* TABLE */
     .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-    .table-toolbar{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);}
+    .table-toolbar{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
     .table-toolbar h3{font-size:15px;font-weight:600;}
     .table-toolbar input{flex:1;max-width:280px;height:36px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:0 14px;outline:none;transition:.2s;}
     .table-toolbar input:focus{border-color:var(--red-dim);}
@@ -90,6 +91,12 @@
     .btn-sm.danger:hover{border-color:#ff4444;color:#ff4444;}
     .empty-row td{text-align:center;padding:40px;color:var(--muted);}
 
+    /* VIEWS BAR */
+    .views-bar-wrap{display:flex;align-items:center;gap:8px;}
+    .views-bar{flex:1;height:4px;background:var(--surface3);border-radius:2px;max-width:80px;}
+    .views-fill{height:100%;background:var(--red);border-radius:2px;}
+    .views-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+
     /* FORM */
     .form-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:760px;}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -100,8 +107,6 @@
     .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--red-dim);box-shadow:0 0 0 3px var(--red-glow);}
     .form-group textarea{min-height:110px;resize:vertical;}
     .form-group select option{background:var(--surface2);}
-
-    /* EPISODES SECTION */
     .episode-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
     .episode-item{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
     .ep-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--red);width:24px;flex-shrink:0;}
@@ -110,13 +115,9 @@
     .ep-del:hover{border-color:#ff4444;color:#ff4444;}
     .add-ep-btn{height:38px;padding:0 16px;background:transparent;border:1px dashed var(--border-red);border-radius:8px;color:var(--accent);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px;width:100%;justify-content:center;}
     .add-ep-btn:hover{background:var(--red-glow);}
-
-    /* THUMB PREVIEW */
     .thumb-preview{width:100%;aspect-ratio:16/9;background:var(--surface3);border-radius:8px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;margin-top:10px;}
     .thumb-preview img{width:100%;height:100%;object-fit:cover;}
-
-    /* SUBMIT BTN */
-    .submit-row{display:flex;gap:12px;margin-top:24px;align-items:center;}
+    .submit-row{display:flex;gap:12px;margin-top:24px;align-items:center;flex-wrap:wrap;}
     .btn-primary{height:44px;padding:0 28px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;transition:.2s;}
     .btn-primary:hover{background:#cc0000;}
     .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
@@ -125,6 +126,19 @@
     .form-msg{font-size:13.5px;padding:0 4px;}
     .form-msg.success{color:var(--green);}
     .form-msg.error{color:#ff6666;}
+
+    /* NOTIF PAGE */
+    .notif-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;max-width:600px;}
+    .notif-card h3{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:20px;}
+    .notif-preview{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin:16px 0;display:flex;align-items:center;gap:12px;}
+    .notif-preview-icon{width:36px;height:36px;border-radius:8px;background:#0e0e12;overflow:hidden;flex-shrink:0;}
+    .notif-preview-icon img{width:100%;height:100%;object-fit:cover;}
+    .notif-preview-body .title{font-size:13px;font-weight:600;margin-bottom:2px;}
+    .notif-preview-body .msg{font-size:12px;color:var(--muted);}
+    .notif-result{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;font-family:'DM Mono',monospace;display:none;}
+    .notif-result.ok{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--green);}
+    .notif-result.fail{background:rgba(230,0,0,0.08);border:1px solid var(--border-red);color:#ff4466;}
+    .sub-count{display:inline-flex;align-items:center;gap:6px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:6px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:12px;color:#60a5fa;margin-bottom:20px;}
 
     /* TOAST */
     #toast{position:fixed;bottom:28px;right:28px;background:var(--surface);border:1px solid var(--border-red);border-radius:10px;padding:14px 20px;font-size:13.5px;color:var(--text);box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:5000;transform:translateY(20px);opacity:0;transition:all .3s;max-width:320px;}
@@ -170,6 +184,7 @@
     <span class="topbar-badge">ADMIN</span>
     <div class="topbar-right">
       <div class="topbar-stat">Total Video: <span id="statTotal">—</span></div>
+      <div class="topbar-stat">Total Views: <span id="statViews">—</span></div>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -190,6 +205,10 @@
       Upload Video
     </a>
     <span class="sidebar-section">TOOLS</span>
+    <a onclick="showPage('notif')" id="nav-notif">
+      <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+      Kirim Notifikasi
+    </a>
     <a href="/" target="_blank">
       <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
       Lihat Site
@@ -222,6 +241,22 @@
           <div class="value" id="dash-eps">—</div>
           <div class="sub">video multi-episode</div>
         </div>
+        <div class="stat-card blue">
+          <div class="label">TOTAL VIEWS</div>
+          <div class="value" id="dash-views">—</div>
+          <div class="sub">semua video</div>
+        </div>
+      </div>
+
+      <!-- TOP VIDEO BY VIEWS -->
+      <div class="table-wrap" style="margin-bottom:24px;">
+        <div class="table-toolbar">
+          <h3>🔥 Top 5 Video Terpopuler</h3>
+        </div>
+        <table>
+          <thead><tr><th>THUMB</th><th>JUDUL</th><th>KATEGORI</th><th>VIEWS</th><th>AKSI</th></tr></thead>
+          <tbody id="topTable"></tbody>
+        </table>
       </div>
 
       <div class="table-wrap">
@@ -249,7 +284,7 @@
           <button class="btn-sm ml-auto" onclick="showPage('upload')">+ Upload</button>
         </div>
         <table>
-          <thead><tr><th>THUMB</th><th>JUDUL</th><th>KATEGORI</th><th>DURASI</th><th>EPISODE</th><th>AKSI</th></tr></thead>
+          <thead><tr><th>THUMB</th><th>JUDUL</th><th>KATEGORI</th><th>DURASI</th><th>VIEWS</th><th>EPISODE</th><th>AKSI</th></tr></thead>
           <tbody id="videoTable"></tbody>
         </table>
       </div>
@@ -278,7 +313,8 @@
           </div>
           <div class="form-group">
             <label>KATEGORI *</label>
-            <input type="text" id="fCat" placeholder="cth: Action, Drama, Komedi...">
+            <input type="text" id="fCat" placeholder="cth: Action, Drama, Komedi..." list="catSuggestions">
+            <datalist id="catSuggestions"></datalist>
           </div>
           <div class="form-group">
             <label>CDN VIDEO URL (Episode 1 / Single) *</label>
@@ -307,13 +343,54 @@
       </div>
     </div>
 
+    <!-- KIRIM NOTIFIKASI -->
+    <div class="page" id="page-notif">
+      <div class="page-header">
+        <h1>Kirim Notifikasi</h1>
+        <p>Broadcast push notification ke semua subscriber</p>
+      </div>
+      <div class="notif-card">
+        <h3>BROADCAST NOTIFIKASI</h3>
+        <div class="sub-count" id="subCount">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          Memuat jumlah subscriber...
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>ADMIN SECRET *</label>
+          <input type="password" id="notifSecret" placeholder="Secret key worker kamu">
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>JUDUL NOTIFIKASI</label>
+          <input type="text" id="notifTitle" placeholder="🎬 Naraverse — Konten Baru!" oninput="updateNotifPreview()">
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>PESAN *</label>
+          <textarea id="notifMsg" placeholder="Ada konten baru yang menanti kamu!" style="min-height:80px;" oninput="updateNotifPreview()"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>URL TUJUAN (opsional)</label>
+          <input type="url" id="notifUrl" placeholder="https://narauniverse.pages.dev/">
+        </div>
+
+        <div class="notif-preview">
+          <div class="notif-preview-icon"><img src="/image-1.png" alt="" onerror="this.style.display='none'"></div>
+          <div class="notif-preview-body">
+            <div class="title" id="notifPrevTitle">🎬 Naraverse — Konten Baru!</div>
+            <div class="msg" id="notifPrevMsg">Ada konten baru yang menanti kamu!</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="notifBtn" onclick="sendNotif()" style="width:100%;">Kirim ke Semua Subscriber</button>
+        <div class="notif-result" id="notifResult"></div>
+      </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- DELETE CONFIRM MODAL -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal-box">
     <h3>Hapus Video?</h3>
@@ -327,7 +404,6 @@
 
 <script>
   const WORKER = "https://naraverse.slibawblewer.workers.dev";
-  // ─── KREDENSIAL ADMIN — GANTI DI SINI ───
   const ADMIN_USER = "admin";
   const ADMIN_PASS = "naraverse2026";
 
@@ -349,13 +425,13 @@
     }
   }
   document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
   function doLogout() {
     sessionStorage.removeItem('nv_admin');
     location.reload();
   }
 
-  // Auto-check session
   if (sessionStorage.getItem('nv_admin') === '1') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'grid';
@@ -369,6 +445,7 @@
     document.getElementById('page-' + id).classList.add('active');
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
+    if (id === 'notif') loadSubCount();
   }
 
   // ─── LOAD VIDEOS ───
@@ -376,7 +453,12 @@
     try {
       const res = await fetch(`${WORKER}/api/videos`);
       allVideos = await res.json();
+      const totalViews = allVideos.reduce((s,v) => s + (v.views||0), 0);
       document.getElementById('statTotal').textContent = allVideos.length;
+      document.getElementById('statViews').textContent = totalViews.toLocaleString();
+      // populate category suggestions
+      const cats = [...new Set(allVideos.map(v=>v.category).filter(Boolean))];
+      document.getElementById('catSuggestions').innerHTML = cats.map(c=>`<option value="${esc(c)}">`).join('');
       renderDashboard();
       renderVideoTable(allVideos);
     } catch(e) {
@@ -390,22 +472,38 @@
     document.getElementById('dash-cats').textContent = cats.size;
     const withEps = allVideos.filter(v => v.episodes && v.episodes.length > 1);
     document.getElementById('dash-eps').textContent = withEps.length;
+    const totalViews = allVideos.reduce((s,v) => s + (v.views||0), 0);
+    document.getElementById('dash-views').textContent = totalViews.toLocaleString();
+
+    // Top 5 by views
+    const top5 = [...allVideos].sort((a,b) => (b.views||0)-(a.views||0)).slice(0,5);
+    const maxViews = top5[0] ? (top5[0].views||1) : 1;
+    document.getElementById('topTable').innerHTML = top5.map(v => `<tr>
+      <td class="thumb-cell"><img src="${esc(v.thumbnail)}" alt="" onerror="this.style.opacity=0"></td>
+      <td style="max-width:220px;"><div style="font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(v.title)}</div></td>
+      <td><span class="cat-badge">${esc(v.category||'—')}</span></td>
+      <td><div class="views-bar-wrap"><div class="views-bar"><div class="views-fill" style="width:${Math.round((v.views||0)/maxViews*100)}%"></div></div><span class="views-num">${(v.views||0).toLocaleString()}</span></div></td>
+      <td><div class="action-btns"><button class="btn-sm" onclick="editVideo('${v.id}')">Edit</button><button class="btn-sm danger" onclick="confirmDelete('${v.id}')">Hapus</button></div></td>
+    </tr>`).join('') || `<tr class="empty-row"><td colspan="5">Belum ada video.</td></tr>`;
+
     const recent = [...allVideos].slice(0, 8);
-    document.getElementById('recentTable').innerHTML = recent.map(v => rowHTML(v)).join('') || emptyRow(5);
+    document.getElementById('recentTable').innerHTML = recent.map(v => rowHTML(v, false)).join('') || emptyRow(5);
   }
 
   function renderVideoTable(list) {
-    document.getElementById('videoTable').innerHTML = list.map(v => rowHTML(v, true)).join('') || emptyRow(6);
+    const maxViews = Math.max(...list.map(v=>v.views||0), 1);
+    document.getElementById('videoTable').innerHTML = list.map(v => rowHTML(v, true, maxViews)).join('') || emptyRow(7);
   }
 
-  function rowHTML(v, showEps=false) {
-    const eps = v.episodes ? v.episodes.length : (v.videoUrl ? 1 : 0);
+  function rowHTML(v, showExtra=false, maxViews=1) {
+    const eps = v.episodes ? v.episodes.length : 1;
     return `<tr>
-      <td class="thumb-cell"><img src="${esc(v.thumbnail)}" alt="" onerror="this.style.background='#222';this.src=''"></td>
+      <td class="thumb-cell"><img src="${esc(v.thumbnail)}" alt="" onerror="this.style.opacity=0"></td>
       <td style="max-width:240px;"><div style="font-weight:500;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(v.title)}</div></td>
       <td><span class="cat-badge">${esc(v.category||'—')}</span></td>
       <td style="font-family:'DM Mono',monospace;font-size:12.5px;color:var(--muted);">${esc(v.duration||'—')}</td>
-      ${showEps ? `<td style="font-family:'DM Mono',monospace;font-size:12.5px;color:var(--muted);">${eps} ep</td>` : ''}
+      ${showExtra ? `<td><div class="views-bar-wrap"><div class="views-bar"><div class="views-fill" style="width:${Math.round((v.views||0)/maxViews*100)}%"></div></div><span class="views-num">${(v.views||0).toLocaleString()}</span></div></td>` : ''}
+      ${showExtra ? `<td style="font-family:'DM Mono',monospace;font-size:12.5px;color:var(--muted);">${eps} ep</td>` : ''}
       <td><div class="action-btns">
         <button class="btn-sm" onclick="editVideo('${v.id}')">Edit</button>
         <button class="btn-sm danger" onclick="confirmDelete('${v.id}')">Hapus</button>
@@ -419,8 +517,7 @@
 
   function filterVideoTable() {
     const q = document.getElementById('videoSearch').value.toLowerCase();
-    const filtered = allVideos.filter(v => (v.title||'').toLowerCase().includes(q));
-    renderVideoTable(filtered);
+    renderVideoTable(allVideos.filter(v => (v.title||'').toLowerCase().includes(q) || (v.category||'').toLowerCase().includes(q)));
   }
 
   // ─── FORM ───
@@ -468,39 +565,23 @@
 
     const episodes = [videoUrl, ...episodeUrls.filter(u=>u.trim())];
     const payload = { title, description: desc, thumbnail, category, videoUrl, duration, episodes };
-
     const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Menyimpan...';
+    btn.disabled = true; btn.textContent = 'Menyimpan...';
 
     try {
-      let res;
-      if (id) {
-        res = await fetch(`${WORKER}/api/videos/${id}`, {
-          method: 'PUT',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
-      } else {
-        res = await fetch(`${WORKER}/api/videos`, {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
-      }
-
+      const res = await fetch(`${WORKER}/api/videos${id ? '/'+id : ''}`, {
+        method: id ? 'PUT' : 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
       if (res.ok) {
         toast(id ? 'Video berhasil diupdate!' : 'Video berhasil diupload!', 'success');
-        resetForm();
-        loadAllVideos();
-        showPage('videos');
+        resetForm(); loadAllVideos(); showPage('videos');
       } else {
-        const err = await res.text();
-        setMsg('Error: ' + err, 'error');
+        const e = await res.text();
+        setMsg('Error: ' + e, 'error');
       }
-    } catch(e) {
-      setMsg('Koneksi gagal ke Worker.', 'error');
-    }
+    } catch(e) { setMsg('Koneksi gagal ke Worker.', 'error'); }
 
     btn.disabled = false;
     btn.textContent = id ? 'Update Video' : 'Upload Video';
@@ -517,26 +598,17 @@
     document.getElementById('fVideo').value = v.videoUrl || (v.episodes && v.episodes[0]) || '';
     document.getElementById('fDuration').value = v.duration || '';
     episodeUrls = (v.episodes || []).slice(1);
-    renderEpisodes();
-    previewThumb();
+    renderEpisodes(); previewThumb();
     document.getElementById('formTitle').textContent = 'Edit Video';
-    document.getElementById('formSubtitle').textContent = 'Update data video: ' + v.title;
+    document.getElementById('formSubtitle').textContent = 'Update: ' + v.title;
     document.getElementById('submitBtn').textContent = 'Update Video';
     showPage('upload');
     document.querySelector('.main').scrollTop = 0;
   }
 
   function resetForm() {
-    document.getElementById('editId').value = '';
-    document.getElementById('fTitle').value = '';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fThumb').value = '';
-    document.getElementById('fCat').value = '';
-    document.getElementById('fVideo').value = '';
-    document.getElementById('fDuration').value = '';
-    episodeUrls = [];
-    renderEpisodes();
-    previewThumb();
+    ['editId','fTitle','fDesc','fThumb','fCat','fVideo','fDuration'].forEach(id => document.getElementById(id).value = '');
+    episodeUrls = []; renderEpisodes(); previewThumb();
     document.getElementById('formTitle').textContent = 'Upload Video';
     document.getElementById('formSubtitle').textContent = 'Tambah video baru ke database';
     document.getElementById('submitBtn').textContent = 'Upload Video';
@@ -545,8 +617,7 @@
 
   function setMsg(msg, type) {
     const el = document.getElementById('formMsg');
-    el.textContent = msg;
-    el.className = 'form-msg ' + type;
+    el.textContent = msg; el.className = 'form-msg ' + type;
   }
 
   // ─── DELETE ───
@@ -563,23 +634,67 @@
     closeDeleteModal();
     try {
       const res = await fetch(`${WORKER}/api/videos/${deleteTargetId}`, { method:'DELETE' });
+      if (res.ok) { toast('Video dihapus.', 'success'); loadAllVideos(); }
+      else toast('Gagal menghapus video.', 'error');
+    } catch(e) { toast('Koneksi gagal.', 'error'); }
+  }
+
+  // ─── NOTIFIKASI ───
+  async function loadSubCount() {
+    // Kita ga bisa list KV langsung dari frontend, jadi tampilkan info saja
+    document.getElementById('subCount').innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      Push notification aktif — siap broadcast ke subscriber
+    `;
+  }
+
+  function updateNotifPreview() {
+    const t = document.getElementById('notifTitle').value;
+    const m = document.getElementById('notifMsg').value;
+    document.getElementById('notifPrevTitle').textContent = t || '🎬 Naraverse — Konten Baru!';
+    document.getElementById('notifPrevMsg').textContent = m || 'Ada konten baru yang menanti kamu!';
+  }
+
+  async function sendNotif() {
+    const secret = document.getElementById('notifSecret').value.trim();
+    const title = document.getElementById('notifTitle').value.trim();
+    const message = document.getElementById('notifMsg').value.trim();
+    const url = document.getElementById('notifUrl').value.trim();
+
+    if (!secret) { showNotifResult('Secret wajib diisi!', 'fail'); return; }
+    if (!message) { showNotifResult('Pesan wajib diisi!', 'fail'); return; }
+
+    const btn = document.getElementById('notifBtn');
+    btn.disabled = true; btn.textContent = 'Mengirim...';
+
+    try {
+      const res = await fetch(`${WORKER}/api/push/send`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ secret, title, message, url: url || '/' })
+      });
+      const d = await res.json();
       if (res.ok) {
-        toast('Video dihapus.', 'success');
-        loadAllVideos();
+        showNotifResult(`✓ Berhasil dikirim ke ${d.sent} subscriber${d.failed ? ' ('+d.failed+' gagal)' : ''}!`, 'ok');
+        toast('Notifikasi terkirim!', 'success');
       } else {
-        toast('Gagal menghapus video.', 'error');
+        showNotifResult('✗ ' + (d.error || 'Gagal mengirim'), 'fail');
       }
-    } catch(e) {
-      toast('Koneksi gagal.', 'error');
-    }
+    } catch(e) { showNotifResult('✗ Koneksi gagal', 'fail'); }
+
+    btn.disabled = false; btn.textContent = 'Kirim ke Semua Subscriber';
+  }
+
+  function showNotifResult(msg, type) {
+    const el = document.getElementById('notifResult');
+    el.textContent = msg; el.className = 'notif-result ' + type; el.style.display = 'block';
   }
 
   // ─── TOAST ───
   let toastTimer;
   function toast(msg, type='') {
     const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = 'show ' + type;
+    el.textContent = msg; el.className = 'show ' + type;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.className = '', 3000);
   }
