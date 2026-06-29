@@ -186,17 +186,17 @@ header{position:sticky;top:0;z-index:500;background:rgba(6,6,8,0.92);backdrop-fi
 #btt.show{opacity:1;transform:translateY(0);}
 #btt svg{width:20px;height:20px;stroke:#fff;fill:none;}
 /* NOTIF BANNER */
-.notif-banner{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0e0e12;border:2px solid var(--red);border-radius:16px;padding:22px 22px;display:flex;align-items:center;gap:16px;z-index:800;box-shadow:0 12px 48px rgba(230,0,0,0.25),0 8px 32px rgba(0,0,0,0.8);max-width:420px;width:calc(100% - 24px);animation:slideUp .4s cubic-bezier(.22,1,.36,1);}
+.notif-banner{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0e0e12;border:1px solid var(--border-red);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;z-index:800;box-shadow:0 8px 32px rgba(0,0,0,0.6);max-width:340px;width:calc(100% - 32px);animation:slideUp .4s cubic-bezier(.22,1,.36,1);}
 .notif-banner.hidden{display:none;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.notif-icon{width:52px;height:52px;background:rgba(230,0,0,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.notif-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;}
+.notif-icon{width:36px;height:36px;background:rgba(230,0,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.notif-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;}
 .notif-text{flex:1;min-width:0;}
-.notif-text p{font-size:15px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:3px;}
-.notif-text span{font-size:12px;color:var(--muted);}
-.notif-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
-.notif-yes{height:38px;padding:0 18px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
-.notif-no{height:38px;padding:0 18px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;}
+.notif-text p{font-size:12px;color:var(--text);line-height:1.4;}
+.notif-text span{font-size:11px;color:var(--muted);}
+.notif-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.notif-yes{height:30px;padding:0 12px;background:var(--red);border:none;border-radius:6px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.notif-no{height:30px;padding:0 12px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;}
 @media(min-width:769px){.notif-banner{bottom:28px;}}
 
 
@@ -834,9 +834,32 @@ async function initNotif(){
 
 async function enableNotif(){
   document.getElementById('notifBanner').classList.add('hidden');
+  // Kalau udah denied, kasih instruksi unblock manual
+  if(Notification.permission==='denied'){
+    openModal('Aktifkan Notifikasi',
+      '<div style="text-align:center;margin-bottom:18px;"><div style="width:52px;height:52px;background:rgba(230,0,0,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><svg viewBox=\"0 0 24 24\" stroke-width=\"2\" width=\"26\" height=\"26\" fill=\"none\" stroke=\"var(--accent)\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0\"/></svg></div><p style=\"font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;\">Notifikasi Diblokir</p><p style=\"font-size:13px;color:#aaa;line-height:1.7;\">Kamu pernah memblokir notifikasi dari situs ini. Ikuti langkah berikut untuk mengaktifkannya kembali:</p></div>'
+      +'<div style=\"background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;\">'
+      +'<div style=\"display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;\"><span style=\"width:22px;height:22px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;\">1</span><span style=\"font-size:13px;color:var(--text);line-height:1.6;\">Klik ikon <b>🔒</b> atau <b>ℹ️</b> di address bar browser kamu</span></div>'
+      +'<div style=\"display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;\"><span style=\"width:22px;height:22px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;\">2</span><span style=\"font-size:13px;color:var(--text);line-height:1.6;\">Pilih <b style=\"color:var(--accent)\">Site settings</b> atau <b style=\"color:var(--accent)\">Permissions</b></span></div>'
+      +'<div style=\"display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;\"><span style=\"width:22px;height:22px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;\">3</span><span style=\"font-size:13px;color:var(--text);line-height:1.6;\">Set <b>Notifications</b> → <b style=\"color:#4ade80\">Allow</b></span></div>'
+      +'<div style=\"display:flex;gap:12px;align-items:flex-start;\"><span style=\"width:22px;height:22px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;\">4</span><span style=\"font-size:13px;color:var(--text);line-height:1.6;\">Refresh halaman ini</span></div>'
+      +'</div>'
+      +'<button onclick=\"location.reload()\" style=\"width:100%;height:44px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:\'DM Sans\',sans-serif;font-size:14px;font-weight:600;cursor:pointer;\">Refresh Sekarang</button>'
+    );
+    return;
+  }
   var perm=await Notification.requestPermission();
   if(perm==='granted'){await registerPush();showToast('Notifikasi diaktifkan!');}
-  else{showToast('Notifikasi diblokir oleh browser.');}
+  else if(perm==='denied'){
+    openModal('Notifikasi Diblokir',
+      '<div style=\"text-align:center;padding:10px 0;\"><p style=\"font-size:14px;color:#aaa;line-height:1.8;margin-bottom:20px;\">Kamu memblokir notifikasi.<br>Untuk mengaktifkan kembali:</p>'
+      +'<div style=\"background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:16px 18px;text-align:left;margin-bottom:20px;\">'
+      +'<p style=\"font-size:13px;color:var(--text);line-height:2.2;\">1. Klik ikon 🔒 di address bar<br>2. Notifications → <b style=\"color:#4ade80\">Allow</b><br>3. Refresh halaman</p>'
+      +'</div>'
+      +'<button onclick=\"location.reload()\" style=\"width:100%;height:44px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:\'DM Sans\',sans-serif;font-size:14px;font-weight:600;cursor:pointer;\">Refresh Sekarang</button></div>'
+    );
+  }
+  else{showToast('Notifikasi diaktifkan!');}
 }
 
 function dismissNotif(){
